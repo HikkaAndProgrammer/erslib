@@ -8,6 +8,7 @@
 
 // ers
 #include <erslib/core/exception.hpp>
+#include <erslib/core/localization/error.hpp>
 #include <erslib/core/localization/options.hpp>
 
 
@@ -157,7 +158,7 @@ ers::Status ers::impl::Domain::_insert(std::string key, size_t locale_id, std::s
 
 
     if (*slot) {
-        return make_error("'{}' is defined twice for {}.",
+        return make_error(ers::ELocalizationError::DuplicateKey, "'{}' is defined twice for {}.",
             it->first, _config->name_of(locale_id));
     }
 
@@ -226,18 +227,22 @@ ers::Status ers::impl::Domain::_resolve_slot(
         : std::format("{}@{}", key, _config->name_of(locale_id));
 
     if (std::ranges::contains(path, label)) {
-        return make_error("Reference cycle: {} -> {}.",
+        return make_error(ers::ELocalizationError::ReferenceCycle, "Reference cycle: {} -> {}.",
             path | std::views::join_with(std::string_view(" -> ")) | std::ranges::to<std::string>(), label);
     }
 
     if (path.size() >= options.max_depth)
-        return make_error("'{}': references are nested deeper than {}.", label, options.max_depth);
+        return make_error(
+            ers::ELocalizationError::ReferenceTooDeep,
+            "'{}': references are nested deeper than {}.", label, options.max_depth);
 
 
     auto name = std::string(text.substr(1));
 
     if (name.empty())
-        return make_error("'{}': '{}' has no name after it.", label, options.marker);
+        return make_error(
+            ers::ELocalizationError::InvalidReference,
+            "'{}': '{}' has no name after it.", label, options.marker);
 
 
     std::string target_key;
@@ -249,12 +254,16 @@ ers::Status ers::impl::Domain::_resolve_slot(
     } else if (auto sibling = sibling_key(key, name)) {
         target_key = std::move(*sibling);
     } else {
-        return make_error("'{}': '{}{}' is relative and the key has no group, write '{}.{}' as a full key.",
+        return make_error(
+            ers::ELocalizationError::InvalidReference,
+            "'{}': '{}{}' is relative and the key has no group, write '{}.{}' as a full key.",
             label, options.marker, name, options.marker, name);
     }
 
     if (has_empty_segment(target_key))
-        return make_error("'{}': '{}{}' is not a key.", label, options.marker, name);
+        return make_error(
+            ers::ELocalizationError::InvalidReference,
+            "'{}': '{}{}' is not a key.", label, options.marker, name);
 
 
     auto target = _entries.find(target_key);
@@ -263,7 +272,9 @@ ers::Status ers::impl::Domain::_resolve_slot(
         : none;
 
     if (!supplier) {
-        return make_error("'{}': '{}{}' refers to '{}', which has no text for {}.",
+        return make_error(
+            ers::ELocalizationError::UnresolvedReference,
+            "'{}': '{}{}' refers to '{}', which has no text for {}.",
             label, options.marker, name, target_key, _config->name_of(locale_id));
     }
 

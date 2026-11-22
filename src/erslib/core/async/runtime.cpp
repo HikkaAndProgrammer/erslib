@@ -15,6 +15,9 @@
 
 #include "erslib/core/async/scheduler.hpp"
 
+// ers
+#include <erslib/core/async/error.hpp>
+
 
 // Details ---------------------------------------------------------------------
 
@@ -44,10 +47,10 @@ namespace {
                 if (e.code() == boost::asio::error::operation_aborted)
                     throw;
 
-                result = ers::make_error("The periodic task '{}' failed: {}",
+                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "The periodic task '{}' failed: {}",
                     options.name, e.what());
             } catch (const std::exception& e) {
-                result = ers::make_error("The periodic task '{}' failed: {}",
+                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "The periodic task '{}' failed: {}",
                     options.name, e.what());
             }
 
@@ -115,7 +118,7 @@ ers::Scheduler& ers::impl::AsyncRuntime::scheduler() noexcept {
 
 ers::Status ers::impl::AsyncRuntime::start() {
     if (_state != EState::Idle)
-        return make_error("The runtime was already started.");
+        return make_error(ers::EAsyncError::AlreadyStarted, "The runtime was already started.");
 
 
     AsyncRegistry registry(*this);
@@ -130,7 +133,7 @@ ers::Status ers::impl::AsyncRuntime::start() {
             continue;
 
 
-        auto error = make_error("The service '{}' failed to start: {}",
+        auto error = make_error(ers::EAsyncError::ServiceStartFailed, "The service '{}' failed to start: {}",
             _services[i]->name(), result.error().message());
 
         while (i-- > 0)

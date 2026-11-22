@@ -5,6 +5,7 @@
 #include <variant>
 
 // ers
+#include <erslib/luaschema/error_code.hpp>
 #include <erslib/luaschema/impl/context.hpp>
 #include <erslib/luaschema/impl/parser.hpp>
 #include <erslib/luaschema/parsers/innate.hpp>
@@ -15,7 +16,7 @@ struct ers::impl::luaschema::parser_t<std::variant<Ts...>> {
     Status exec(parser_context& ctx, sol::object obj, std::variant<Ts...>& dst) const {
         bool matched = (this->_try_one<Ts>(ctx, obj, dst) || ...);
         if (!matched)
-            return make_error("No variant alternative matched");
+            return make_error(ers::ELuaSchemaError::NoVariantMatched, "No variant alternative matched");
         return ok;
     }
 

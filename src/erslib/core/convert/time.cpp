@@ -1,3 +1,4 @@
+#include <erslib/core/convert/error.hpp>
 #include <erslib/core/convert/time.hpp>
 
 // std
@@ -16,7 +17,7 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_local(
     in >> std::chrono::parse(std::string(fmt), local);
 
     if (in.fail())
-        return make_error("Can't parse local time '{}' with '{}'", text, fmt);
+        return make_error(ers::EConvertError::ParseFailed, "Can't parse local time '{}' with '{}'", text, fmt);
 
     return timestamp_t(zone.to_sys(local, std::chrono::choose::earliest));
 }

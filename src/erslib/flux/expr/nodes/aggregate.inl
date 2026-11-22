@@ -5,6 +5,7 @@
 #include <utility>
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/expr/aggregate.hpp>
 #include "common.inl"
 
@@ -20,10 +21,12 @@ namespace flux::impl::nodes {
 
         ers::Status render(Context& ctx) const override {
             if (!is_identifier(_name))
-                return ers::make_error("Invalid aggregate name '{}'.", _name);
+                return ers::make_error(flux::EQueryError::InvalidName, "Invalid aggregate name '{}'.", _name);
 
             if (_what.ordered_set && _what.within_group.empty())
-                return ers::make_error("Ordered-set aggregate '{}' needs a WITHIN GROUP ordering.", _name);
+                return ers::make_error(
+                    flux::EQueryError::MissingOrdering,
+                    "Ordered-set aggregate '{}' needs a WITHIN GROUP ordering.", _name);
 
             ctx.query += _name;
             ctx.query += '(';

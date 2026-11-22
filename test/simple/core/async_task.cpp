@@ -34,7 +34,7 @@ namespace {
     }
 
     ers::AsyncTask<void> fail() {
-        co_return ers::make_error("boom {}", 7);
+        co_return ers::make_error(std::errc::io_error, "boom {}", 7);
     }
 
     ers::AsyncTask<int> propagates() {

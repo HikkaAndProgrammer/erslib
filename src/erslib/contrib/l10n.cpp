@@ -4,6 +4,9 @@
 #include <string>
 #include <utility>
 
+// ers
+#include <erslib/core/localization/error.hpp>
+
 
 // Utility
 
@@ -23,7 +26,7 @@ namespace {
                 const auto& line = node.as_array()[i];
 
                 if (!line.is_string()) {
-                    return ers::make_error("'{}[{}]' must be a string, not {}.",
+                    return ers::make_error(ers::ELocalizationError::BadBundle, "'{}[{}]' must be a string, not {}.",
                         key, i, utl::type_label(line.type()));
                 }
 
@@ -41,7 +44,9 @@ namespace {
         if (node.is_object()) {
             for (const auto& [name, child] : node.as_object()) {
                 if (name.empty() || name.contains('.')) {
-                    return ers::make_error("'{}{}{}': a key can't be empty or hold '.', nest objects instead.",
+                    return ers::make_error(
+                        ers::ELocalizationError::InvalidKey,
+                        "'{}{}{}': a key can't be empty or hold '.', nest objects instead.",
                         key, key.empty() ? "" : ".", name);
                 }
 
@@ -63,7 +68,9 @@ namespace {
         }
 
 
-        return ers::make_error("'{}' must be a string, an array of strings or an object, not {}.",
+        return ers::make_error(
+            ers::ELocalizationError::BadBundle,
+            "'{}' must be a string, an array of strings or an object, not {}.",
             key, utl::type_label(node.type()));
     }
 }
@@ -73,7 +80,9 @@ namespace {
 
 ers::Result<std::vector<ers::bundle_entry_t>> utl::impl::flatten_l10n(const Json& bundle) {
     if (!bundle.is_object())
-        return ers::make_error("A bundle must be an object, not {}.", type_label(bundle.type()));
+        return ers::make_error(
+            ers::ELocalizationError::BadBundle,
+            "A bundle must be an object, not {}.", type_label(bundle.type()));
 
 
     std::vector<ers::bundle_entry_t> out;

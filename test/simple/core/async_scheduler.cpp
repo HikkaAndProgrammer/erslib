@@ -51,7 +51,7 @@ namespace {
     }
 
     ers::AsyncTask<int> broken() {
-        co_return ers::make_error("boom");
+        co_return ers::make_error(std::errc::io_error, "boom");
     }
 
     ers::AsyncTask<void> blocker(std::shared_future<void> gate) {
@@ -225,7 +225,7 @@ namespace {
 
     ers::AsyncTask<int> failing(ers::Scheduler& scheduler) {
         ERS_CO_TRY_AS(int value, co_await scheduler.blocking([]() -> ers::Result<int> {
-            return ers::make_error("db down");
+            return ers::make_error(std::errc::connection_reset, "db down");
         }));
         co_return value;
     }

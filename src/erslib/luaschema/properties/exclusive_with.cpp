@@ -4,6 +4,9 @@
 #include <optional>
 #include <utility>
 
+// ers
+#include <erslib/luaschema/error_code.hpp>
+
 
 ers::impl::luaschema::ExclusiveWithProperty::ExclusiveWithProperty(std::vector<std::string> incompatible_fields) :
     IVerifier(1),
@@ -25,7 +28,7 @@ ers::Status ers::impl::luaschema::ExclusiveWithProperty::exec([[maybe_unused]] v
 
 
     if (!intersection.empty()) {
-        return ers::make_error("Field '{}' is exclusive with fields {}",
+        return ers::make_error(ers::ELuaSchemaError::ExclusiveFields, "Field '{}' is exclusive with fields {}",
             field, intersection);
     }
 

@@ -8,6 +8,7 @@
 #include <vector>
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/expr/expr.hpp>
 #include <erslib/flux/query/clause.hpp>
 #include <erslib/flux/query/clauses/where.hpp>
@@ -32,7 +33,7 @@ namespace flux::impl::crud {
         // Executors
 
         ers::Status render(Context&) const override {
-            return ers::make_error("{}", _message);
+            return ers::make_error(flux::EQueryError::Failed, "{}", _message);
         }
 
 

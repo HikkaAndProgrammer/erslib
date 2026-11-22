@@ -8,6 +8,7 @@
 #include <utility>
 
 // ers
+#include <erslib/core/convert/error.hpp>
 #include <erslib/core/exception.hpp>
 
 
@@ -36,7 +37,7 @@ namespace ers::impl {
     template<typename Clock>
     Result<timestamp_t> try_timestamp_from_string(std::string_view sv, std::string_view fmt) {
         return parse_timestamp<Clock>(sv, fmt, [&] -> Result<timestamp_t> {
-            return make_error("Can't cast '{}' with '{}'", sv, fmt);
+            return make_error(ers::EConvertError::CastFailed, "Can't cast '{}' with '{}'", sv, fmt);
         });
     }
 

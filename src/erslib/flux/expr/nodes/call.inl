@@ -6,6 +6,7 @@
 #include <vector>
 
 // ers
+#include <erslib/flux/error.hpp>
 #include "common.inl"
 
 
@@ -20,7 +21,7 @@ namespace flux::impl::nodes {
 
         ers::Status render(Context& ctx) const override {
             if (!is_identifier(_name))
-                return ers::make_error("Invalid function name '{}'.", _name);
+                return ers::make_error(flux::EQueryError::InvalidName, "Invalid function name '{}'.", _name);
 
             ctx.query += _name;
             ctx.query += '(';
@@ -75,7 +76,9 @@ namespace flux::impl::nodes {
 
             for (auto at = rest.find("{}"); at != std::string_view::npos; at = rest.find("{}")) {
                 if (used == _args.size())
-                    return ers::make_error("Raw SQL '{}' has more '{{}}' than arguments.", _pattern);
+                    return ers::make_error(
+                        flux::EQueryError::RawPlaceholderMismatch,
+                        "Raw SQL '{}' has more '{{}}' than arguments.", _pattern);
 
                 ctx.query += rest.substr(0, at);
                 ERS_TRY(_args[used++].render(ctx, EPrecedence::Primary));
@@ -84,7 +87,9 @@ namespace flux::impl::nodes {
             }
 
             if (used != _args.size())
-                return ers::make_error("Raw SQL '{}' has fewer '{{}}' than arguments.", _pattern);
+                return ers::make_error(
+                    flux::EQueryError::RawPlaceholderMismatch,
+                    "Raw SQL '{}' has fewer '{{}}' than arguments.", _pattern);
 
             ctx.query += rest;
             return ers::ok;

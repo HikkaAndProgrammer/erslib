@@ -31,6 +31,7 @@
 
 // ers
 #include <erslib/core/algorithm/args.hpp>
+#include <erslib/core/async/error.hpp>
 
 
 using namespace boost::asio::experimental::awaitable_operators;
@@ -184,7 +185,7 @@ namespace {
 
 ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<std::string> args, process_options_t options) {
     if (args.empty())
-        co_return make_error("The process command is empty.");
+        co_return make_error(ers::EProcessError::EmptyCommand, "The process command is empty.");
 
     ignore_sigpipe();
 
@@ -201,7 +202,7 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
         executable = proc::environment::find_executable(args[0]);
 
     if (executable.empty()) {
-        co_return make_error("Could not start '{}': executable not found.",
+        co_return make_error(ers::EProcessError::ExecutableNotFound, "Could not start '{}': executable not found.",
             args[0]);
     }
 
@@ -233,7 +234,7 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
         );
 
     if (error) {
-        co_return make_error("Could not start '{}': {}",
+        co_return make_error(ers::EProcessError::StartFailed, "Could not start '{}': {}",
             args[0], error.message());
     }
 
@@ -252,16 +253,16 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
     );
 
     if (out_failure || err_failure) {
-        co_return make_error("Could not read the process output: {}",
+        co_return make_error(ers::EProcessError::ReadFailed, "Could not read the process output: {}",
             (out_failure ? out_failure : err_failure).message());
     }
 
 
     if (state.cancelled)
-        co_return make_error("The process was cancelled.");
+        co_return make_error(ers::EProcessError::Cancelled, "The process was cancelled.");
 
     if (state.timed_out)
-        co_return make_error("The process timed out.");
+        co_return make_error(ers::EProcessError::TimedOut, "The process timed out.");
 
 
     output.exit_code = state.exit_code;

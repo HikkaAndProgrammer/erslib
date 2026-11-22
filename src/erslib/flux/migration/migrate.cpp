@@ -9,6 +9,7 @@
 
 // ers
 #include <erslib/flux/connection/try_scope.hpp>
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/migration/migrator.hpp>
 #include <erslib/flux/migration/source.hpp>
 
@@ -66,7 +67,9 @@ namespace {
 
         for (const auto& target : targets) {
             if (target.schema == schema_name)
-                return ers::make_error("Schema '{}' is reserved for flux's service tables", schema_name);
+                return ers::make_error(
+                    flux::EMigrationError::ReservedSchema,
+                    "Schema '{}' is reserved for flux's service tables", schema_name);
 
             auto loaded = flux::impl::load_migrations(root / target.schema);
 

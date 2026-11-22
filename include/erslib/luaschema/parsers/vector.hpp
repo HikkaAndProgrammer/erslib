@@ -4,6 +4,7 @@
 #include <vector>
 
 // ers
+#include <erslib/luaschema/error_code.hpp>
 #include <erslib/luaschema/impl/context.hpp>
 #include <erslib/luaschema/impl/parser.hpp>
 #include <erslib/luaschema/parsers/innate.hpp>
@@ -13,7 +14,7 @@ template<typename T>
 struct ers::impl::luaschema::parser_t<std::vector<T>> {
     Status exec(parser_context& ctx, sol::object obj, std::vector<T>& dst) const {
         if (!obj.is<sol::table>())
-            return make_error("Expected array table");
+            return make_error(ers::ELuaSchemaError::ExpectedArray, "Expected array table");
 
         auto arr = obj.as<sol::table>();
         dst.reserve(arr.size());

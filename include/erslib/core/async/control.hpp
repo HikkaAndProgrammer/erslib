@@ -21,6 +21,7 @@
 #include <boost/system/system_error.hpp>
 
 // ers
+#include <erslib/core/async/error.hpp>
 #include <erslib/core/async/task.hpp>
 #include <erslib/core/type/maybe.hpp>
 #include <erslib/core/type/result.hpp>
@@ -133,7 +134,7 @@ namespace ers::impl {
     template<typename T>
     AsyncTask<T> cancellable(std::shared_ptr<JobControl> control, AsyncTask<T> task) {
         if (control->cancelled())
-            co_return make_error("The job was cancelled.");
+            co_return make_error(ers::EAsyncError::Cancelled, "The job was cancelled.");
 
         Result<T> result;
         std::exception_ptr error;
@@ -151,7 +152,7 @@ namespace ers::impl {
         }
 
         if (aborted)
-            co_return make_error("The job was cancelled.");
+            co_return make_error(ers::EAsyncError::Cancelled, "The job was cancelled.");
 
         if (error)
             std::rethrow_exception(error);

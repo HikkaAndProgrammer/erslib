@@ -11,6 +11,7 @@
 #include <vector>
 
 // ers
+#include <erslib/contrib/json/error.hpp>
 #include <erslib/contrib/json/impl.hpp>
 #include <erslib/contrib/json/traits.hpp>
 #include <erslib/core/concept/json.hpp>
@@ -79,7 +80,7 @@ namespace utl::impl {
         [[nodiscard]]
         ers::Status finalize() {
             if (!m_errors.empty()) {
-                return ers::make_error("{}",
+                return ers::make_error(ers::EJsonError::Mismatch, "{}",
                     std::views::join_with(m_errors, "; "));
             }
 

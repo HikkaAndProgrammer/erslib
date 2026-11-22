@@ -6,6 +6,7 @@
 #include <utility>
 
 // ers
+#include <erslib/flux/error.hpp>
 #include "common.inl"
 
 
@@ -73,7 +74,9 @@ namespace flux::impl::nodes {
 
         ers::Status render(Context& ctx) const override {
             if (!is_identifier(_name))
-                return ers::make_error("Invalid identifier '{}' in an expression.", _name);
+                return ers::make_error(
+                    flux::EQueryError::InvalidIdentifier,
+                    "Invalid identifier '{}' in an expression.", _name);
 
             ctx.query += _name;
             return ers::ok;

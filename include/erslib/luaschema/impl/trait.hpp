@@ -9,6 +9,7 @@
 
 // ers
 #include <erslib/core/type/result.hpp>
+#include <erslib/luaschema/error_code.hpp>
 #include <erslib/luaschema/impl/parser.hpp>
 #include <erslib/luaschema/impl/verifier.hpp>
 
@@ -41,10 +42,10 @@ namespace ers::impl::luaschema {
         static constexpr sol::type expected_type = impl::luaschema::sol_type_for<T>();
 
         if (!obj.valid())
-            return make_error("Object is not valid or nil");
+            return make_error(ers::ELuaSchemaError::InvalidObject, "Object is not valid or nil");
 
         if (obj.get_type() != expected_type)
-            return make_error("Object has unexpected type");
+            return make_error(ers::ELuaSchemaError::UnexpectedType, "Object has unexpected type");
 
         return ok;
     }

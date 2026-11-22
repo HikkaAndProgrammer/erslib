@@ -1,5 +1,8 @@
 #include "erslib/flux/query/clauses/raw.hpp"
 
+// ers
+#include <erslib/flux/error.hpp>
+
 
 flux::impl::RawClause::RawClause(SlotRef slot, std::string sql, std::vector<binder_t> binders) :
     IClause(slot),
@@ -17,7 +20,9 @@ ers::Status flux::impl::RawClause::render(Context& ctx) const {
         }
 
         if (next == _binders.size()) {
-            return ers::make_error("Slot '{}' has more '?' markers than values ({}).",
+            return ers::make_error(
+                flux::EQueryError::PlaceholderMismatch,
+                "Slot '{}' has more '?' markers than values ({}).",
                 slot()->name, _binders.size());
         }
 
@@ -27,7 +32,9 @@ ers::Status flux::impl::RawClause::render(Context& ctx) const {
     }
 
     if (next != _binders.size()) {
-        return ers::make_error("Slot '{}' has {} values for only {} '?' markers.",
+        return ers::make_error(
+            flux::EQueryError::PlaceholderMismatch,
+            "Slot '{}' has {} values for only {} '?' markers.",
             slot()->name, _binders.size(), next);
     }
 

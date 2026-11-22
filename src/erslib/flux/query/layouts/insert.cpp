@@ -4,6 +4,7 @@
 #include <utility>
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/query/clauses/assign.hpp>
 #include <erslib/flux/query/clauses/conflict.hpp>
 #include <erslib/flux/query/clauses/identity.hpp>
@@ -30,7 +31,9 @@ namespace {
 
             if (!assign) {
                 ERS_TRY((*clause)->render(ctx));
-                return ers::make_error("Only assignments are allowed in the SET of INSERT.");
+                return ers::make_error(
+                    flux::EQueryError::InvalidSetItem,
+                    "Only assignments are allowed in the SET of INSERT.");
             }
 
             assigns.push_back(assign);

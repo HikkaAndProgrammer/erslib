@@ -11,6 +11,9 @@
 #include <boost/uuid/string_generator.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
+// ers
+#include <erslib/core/convert/error.hpp>
+
 
 // Implementation --------------------------------------------------------------
 
@@ -26,7 +29,7 @@ boost::uuids::uuid ers::impl::uuid_from_string(std::string_view text) {
 ers::Result<boost::uuids::uuid> ers::impl::try_uuid_from_string(std::string_view text) try {
     return uuid_from_string(text);
 } catch (const std::exception& e) {
-    return make_error("{}", e.what());
+    return make_error(ers::EConvertError::ParseFailed, "{}", e.what());
 }
 
 ers::maybe<boost::uuids::uuid> ers::impl::maybe_uuid_from_string(std::string_view text) try {

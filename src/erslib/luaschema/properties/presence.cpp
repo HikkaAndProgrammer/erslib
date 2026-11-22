@@ -3,6 +3,9 @@
 // std
 #include <optional>
 
+// ers
+#include <erslib/luaschema/error_code.hpp>
+
 
 ers::impl::luaschema::PresenceProperty::PresenceProperty(bool is_required) :
     IVerifier(0),
@@ -12,7 +15,7 @@ ers::impl::luaschema::PresenceProperty::PresenceProperty(bool is_required) :
 ers::Status ers::impl::luaschema::PresenceProperty::exec([[maybe_unused]] verify_context& ctx, sol::table table, std::string_view field) const {
     if (!table.get<std::optional<sol::object>>(field)) {
         if (_is_required) {
-            return ers::make_error("Field '{}' is required but is not found",
+            return ers::make_error(ers::ELuaSchemaError::FieldRequired, "Field '{}' is required but is not found",
                 field);
         } else {
             ctx.skip = true;

@@ -1,6 +1,7 @@
 #include "erslib/flux/query/clauses/values.hpp"
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/query/slots/values.hpp>
 
 
@@ -13,7 +14,7 @@ flux::impl::ValuesClause::ValuesClause(std::vector<Expr> items) :
 
 ers::Status flux::impl::ValuesClause::render(Context& ctx) const {
     if (_items.empty())
-        return ers::make_error("Slot '{}' needs at least one value.", slot()->name);
+        return ers::make_error(flux::EQueryError::EmptyValues, "Slot '{}' needs at least one value.", slot()->name);
 
     bool first = true;
 

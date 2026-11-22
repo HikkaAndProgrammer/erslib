@@ -9,6 +9,7 @@
 #include <erslib/core/thread_safe/map.hpp>
 #include <erslib/core/type/diagnostic.hpp>
 #include <erslib/core/type/result.hpp>
+#include <erslib/modkit/error.hpp>
 #include <erslib/modkit/fwd.hpp>
 #include <erslib/modkit/resource.hpp>
 
@@ -59,7 +60,7 @@ namespace ers::impl::modkit {
 
 
             if (!result)
-                return make_error("Element with key {} is not found", k);
+                return make_error(ers::EModkitError::ElementNotFound, "Element with key {} is not found", k);
 
 
             return std::move(*result);

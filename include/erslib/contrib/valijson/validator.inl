@@ -16,6 +16,7 @@
 #include <valijson/validator.hpp>
 
 // ers
+#include <erslib/contrib/json/error.hpp>
 #include <erslib/contrib/valijson/adapter.hpp>
 #include <erslib/contrib/valijson/validator.hpp>
 
@@ -32,7 +33,7 @@ ers::Result<utl::impl::JsonValidator> utl::impl::JsonValidator::compile(const TN
     return JsonValidator(std::move(out));
 }
 catch (const std::exception& e) {
-    return ers::make_error("Invalid JSON schema: {}", e.what());
+    return ers::make_error(ers::EJsonError::InvalidSchema, "Invalid JSON schema: {}", e.what());
 }
 
 
@@ -58,8 +59,8 @@ ers::Status utl::impl::JsonValidator::validate(const TNode<Traits>& document) co
         message += error.description;
     }
 
-    return ers::make_error("{}", message);
+    return ers::make_error(ers::EJsonError::ValidationFailed, "{}", message);
 }
 catch (const std::exception& e) {
-    return ers::make_error("JSON validation failed: {}", e.what());
+    return ers::make_error(ers::EJsonError::ValidationFailed, "JSON validation failed: {}", e.what());
 }

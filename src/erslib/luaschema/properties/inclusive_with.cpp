@@ -4,6 +4,9 @@
 #include <optional>
 #include <utility>
 
+// ers
+#include <erslib/luaschema/error_code.hpp>
+
 
 ers::impl::luaschema::InclusiveWithProperty::InclusiveWithProperty(std::vector<std::string> mandatory_fields) :
     IVerifier(1),
@@ -25,7 +28,7 @@ ers::Status ers::impl::luaschema::InclusiveWithProperty::exec([[maybe_unused]] v
 
 
     if (!absent.empty()) {
-        return ers::make_error("Field '{}' is inclusive with fields {}",
+        return ers::make_error(ers::ELuaSchemaError::InclusiveFields, "Field '{}' is inclusive with fields {}",
             field, absent);
     }
 

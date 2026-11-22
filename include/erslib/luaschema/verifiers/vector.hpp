@@ -4,6 +4,7 @@
 #include <vector>
 
 // ers
+#include <erslib/luaschema/error_code.hpp>
 #include <erslib/luaschema/impl/verifier.hpp>
 
 
@@ -11,7 +12,7 @@ template<typename T>
 struct ers::impl::luaschema::verifier_t<std::vector<T>> {
     Status exec(verify_context& ctx, sol::object obj) const {
         if (!obj.is<sol::table>())
-            return make_error("Expected array table");
+            return make_error(ers::ELuaSchemaError::ExpectedArray, "Expected array table");
 
         auto arr = obj.as<sol::table>();
 

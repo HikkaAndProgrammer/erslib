@@ -11,6 +11,7 @@
 // ers
 #include <erslib/core/type/result.hpp>
 #include <erslib/flux/connection/scope.hpp>
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/reflect/ddl.hpp>
 
 
@@ -39,7 +40,9 @@ namespace flux::impl::reflect {
                 stage = "commit";
             }, std::format("{}/Create", S::name));
         } catch (const std::exception& e) {
-            return ers::make_error("Creating schema '{}' failed at '{}': {}", S::name, stage, e.what());
+            return ers::make_error(
+                flux::EMigrationError::SchemaCreateFailed,
+                "Creating schema '{}' failed at '{}': {}", S::name, stage, e.what());
         }
 
         return ers::ok;

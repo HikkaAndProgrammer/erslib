@@ -1,12 +1,13 @@
 #include "erslib/flux/query/render.hpp"
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/sql/identifier.hpp>
 
 
 ers::Status flux::impl::check_identifier(std::string_view name, SlotRef slot) {
     if (!is_identifier(name)) {
-        return ers::make_error("Invalid identifier '{}' in slot '{}'.",
+        return ers::make_error(flux::EQueryError::InvalidIdentifier, "Invalid identifier '{}' in slot '{}'.",
             name, slot ? slot->name : "<null>");
     }
 

@@ -8,6 +8,7 @@
 // ers
 #include <erslib/core/exception.hpp>
 #include <erslib/core/filesystem.hpp>
+#include <erslib/flux/error.hpp>
 
 
 // Implementation --------------------------------------------------------------
@@ -27,7 +28,7 @@ ers::Result<flux::impl::ConnectionPool::Connection> flux::impl::ConnectionPool::
     };
 
     if (!_cv.wait_for(lock, _pool_opts.acquire_timeout, can_supply))
-        return ers::make_error("Timed out acquiring a pooled connection");
+        return ers::make_error(flux::EConnectionError::PoolTimeout, "Timed out acquiring a pooled connection");
 
 
     const auto now = ers::clock_t::now();

@@ -1,6 +1,7 @@
 #include "erslib/flux/query/clauses/conflict.hpp"
 
 // ers
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/query/clauses/raw.hpp>
 #include <erslib/flux/query/render.hpp>
 
@@ -12,7 +13,7 @@ flux::impl::ConflictUpdateClause::ConflictUpdateClause(std::vector<std::string> 
 
 ers::Status flux::impl::ConflictUpdateClause::render(Context& ctx) const {
     if (_columns.empty()) {
-        return ers::make_error("Slot '{}' needs at least one column.",
+        return ers::make_error(flux::EQueryError::EmptyColumns, "Slot '{}' needs at least one column.",
             slot()->name);
     }
 

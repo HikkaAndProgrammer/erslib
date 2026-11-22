@@ -62,7 +62,7 @@ namespace {
             _recorder.note(_id);
 
             if (_fail)
-                return ers::make_error("refused");
+                return ers::make_error(std::errc::connection_refused, "refused");
 
             return ers::ok;
         }
@@ -95,7 +95,7 @@ namespace {
 
         ers::Result<void> start() override {
             if (!_bulkhead)
-                return ers::make_error("declare was not called before start");
+                return ers::make_error(std::errc::invalid_argument, "declare was not called before start");
 
             return ers::ok;
         }
@@ -127,7 +127,7 @@ namespace {
             ++count;
 
             if (fail)
-                co_return ers::make_error("tick failed");
+                co_return ers::make_error(std::errc::io_error, "tick failed");
 
             co_return ers::ok;
         }

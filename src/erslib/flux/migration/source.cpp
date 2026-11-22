@@ -9,6 +9,7 @@
 #include <erslib/core/convert/number.hpp>
 #include <erslib/core/hashing/fnv.hpp>
 #include <erslib/core/util/string.hpp>
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/migration/canonical.hpp>
 
 
@@ -63,7 +64,7 @@ namespace {
             } else if (std::regex_match(body, parsed, drop_directive)) {
                 out.drops.push_back(parsed[1].str());
             } else {
-                return ers::make_error("'{}': unknown directive '{}'.",
+                return ers::make_error(flux::EMigrationError::UnknownDirective, "'{}': unknown directive '{}'.",
                     out.id, ers::util::trim(body));
             }
         }
@@ -72,7 +73,9 @@ namespace {
         bool has_directives = !out.claims.empty() || !out.drops.empty();
 
         if (has_directives && out.on != flux::impl::EApplyOn::Existing) {
-            return ers::make_error("'{}': table directives belong to .existing.sql migrations only.",
+            return ers::make_error(
+                flux::EMigrationError::MisplacedDirective,
+                "'{}': table directives belong to .existing.sql migrations only.",
                 out.id);
         }
 
@@ -102,13 +105,17 @@ ers::Result<flux::impl::migration_t> flux::impl::parse_migration(std::string_vie
         out.id = match[1].str();
         out.on = EApplyOn::Repeatable;
     } else {
-        return ers::make_error("'{}' is not a migration name, expected 'NNNN_name.{{existing|fresh|always}}.sql' or 'name.repeatable.sql'.",
+        return ers::make_error(
+            flux::EMigrationError::BadName,
+            "'{}' is not a migration name, expected 'NNNN_name.{{existing|fresh|always}}.sql' or 'name.repeatable.sql'.",
             filename);
     }
 
 
     if (std::regex_search(sql, transaction_control)) {
-        return ers::make_error("'{}': '{{BEGIN|COMMIT|ROLLBACK}}' are not allowed, the whole run is one transaction.",
+        return ers::make_error(
+            flux::EMigrationError::ForbiddenStatement,
+            "'{}': '{{BEGIN|COMMIT|ROLLBACK}}' are not allowed, the whole run is one transaction.",
             out.id);
     }
 
@@ -149,7 +156,9 @@ ers::Result<flux::impl::migration_set_t> flux::impl::load_migrations(const fs::p
 
     if (auto duplicate = std::ranges::adjacent_find(out.versioned, {}, &migration_t::version);
         duplicate != out.versioned.end()) {
-        return ers::make_error("'{}': version {} is used by more than one migration.",
+        return ers::make_error(
+            flux::EMigrationError::DuplicateVersion,
+            "'{}': version {} is used by more than one migration.",
             dir.string(), *duplicate->version);
     }
 

@@ -57,7 +57,7 @@ namespace ers::impl {
     template<HasFromChars T>
     Result<T> try_number_from_string(std::string_view text, int base) {
         return parse_number<T>(text, base, [text](std::errc ec) -> Result<T> {
-            return make_error(describe_number_error<T>(text, ec));
+            return make_error(ec, describe_number_error<T>(text, ec));
         });
     }
 

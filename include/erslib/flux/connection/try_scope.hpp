@@ -16,6 +16,7 @@
 #include <erslib/core/type/result.hpp>
 #include <erslib/core/util/string.hpp>
 #include <erslib/flux/connection/scope.hpp>
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/result/row_generator.hpp>
 
 
@@ -49,11 +50,15 @@ namespace flux::impl {
             } else
                 return std::invoke(std::forward<Fn>(fn));
         } catch (const pqxx::broken_connection& e) {
-            return ers::make_crit("'{}': connection lost: {}", label, ers::util::trim(e.what()));
+            return ers::make_crit(
+                flux::EConnectionError::ConnectionLost,
+                "'{}': connection lost: {}", label, ers::util::trim(e.what()));
         } catch (const pqxx::sql_error& e) {
-            return ers::make_error("'{}' failed [{}]: {}", label, e.sqlstate(), ers::util::trim(e.what()));
+            return ers::make_error(
+                flux::EConnectionError::StatementFailed,
+                "'{}' failed [{}]: {}", label, e.sqlstate(), ers::util::trim(e.what()));
         } catch (const std::exception& e) {
-            return ers::make_error("'{}' failed: {}", label, e.what());
+            return ers::make_error(flux::EConnectionError::Failed, "'{}' failed: {}", label, e.what());
         }
     }
 

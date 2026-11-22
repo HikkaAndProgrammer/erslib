@@ -42,7 +42,7 @@ namespace {
                     auto at = line.find(" = ");
 
                     if (at == std::string_view::npos)
-                        return ers::make_error("'{}' has no ' = '.", line);
+                        return ers::make_error(std::errc::invalid_argument, "'{}' has no ' = '.", line);
 
                     out.push_back({ .key = std::string(line.substr(0, at)), .text = std::string(line.substr(at + 3)) });
                 }
@@ -87,7 +87,7 @@ namespace {
 
             for (auto key : palette.ids()) {
                 if (!palette.hex(key))
-                    return ers::make_error("Colour '{}' has no hex.", key);
+                    return ers::make_error(std::errc::invalid_argument, "Colour '{}' has no hex.", key);
             }
 
             return ers::ok;
@@ -688,7 +688,7 @@ ERS_TEST_CASE("validators", "[core][fs]") {
 
     REQUIRE(table.add_validator("mail", [](const ers::DomainPtr& mail) -> ers::Status {
         if (!mail->find("txt.new_order", mail->config().fallback_locale_id))
-        return ers::make_error("No new order mail.");
+        return ers::make_error(std::errc::no_message, "No new order mail.");
         return ers::ok;
     }));
 

@@ -13,6 +13,7 @@
 #include <erslib/core/filesystem.hpp>
 #include <erslib/core/util/file.hpp>
 #include <erslib/core/util/string.hpp>
+#include <erslib/modkit/error.hpp>
 
 
 using std::string_literals::operator ""s;
@@ -27,7 +28,7 @@ namespace {
 
         for (const auto& obj : array) {
             if (!obj.is_string()) {
-                return ers::make_error("Expected '{}' got '{}'.",
+                return ers::make_error(ers::EModkitError::TypeMismatch, "Expected '{}' got '{}'.",
                     ers::meta::type_name_v<utl::Json::string_type>, type_label(obj.type()));
             }
 

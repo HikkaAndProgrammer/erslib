@@ -6,6 +6,7 @@
 
 // ers
 #include <erslib/core/formatter/range.hpp>
+#include <erslib/luaschema/error_code.hpp>
 
 
 ers::impl::luaschema::OneOfProperty::OneOfProperty(std::vector<std::string> names) :
@@ -22,12 +23,16 @@ ers::Status ers::impl::luaschema::OneOfProperty::verify(sol::table table) const 
     }
 
     if (present.size() > 1) {
-        return ers::make_error("Exactly one of fields {} must be defined, but several are: {}",
+        return ers::make_error(
+            ers::ELuaSchemaError::OneOfRequired,
+            "Exactly one of fields {} must be defined, but several are: {}",
             _names, present);
     }
 
     if (present.empty()) {
-        return ers::make_error("Exactly one of fields {} must be defined, but none is",
+        return ers::make_error(
+            ers::ELuaSchemaError::OneOfRequired,
+            "Exactly one of fields {} must be defined, but none is",
             _names);
     }
 

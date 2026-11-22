@@ -7,6 +7,7 @@
 #include <utility>
 
 // ers
+#include <erslib/core/convert/error.hpp>
 #include <erslib/core/type/diagnostic.hpp>
 #include <erslib/core/type/maybe.hpp>
 #include <erslib/core/type/result.hpp>
@@ -29,7 +30,7 @@ namespace ers::impl {
         static Result<T> try_parse(std::string_view text) try {
             return std::invoke(Plain, text);
         } catch (const std::exception& e) {
-            return make_error("{}", e.what());
+            return make_error(ers::EConvertError::ParseFailed, "{}", e.what());
         }
 
         static maybe<T> maybe_parse(std::string_view text) try {

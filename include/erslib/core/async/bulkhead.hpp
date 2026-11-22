@@ -13,6 +13,7 @@
 #include <utility>
 
 // ers
+#include <erslib/core/async/error.hpp>
 #include <erslib/core/async/job.hpp>
 #include <erslib/core/async/scheduler.hpp>
 
@@ -127,7 +128,9 @@ namespace ers::impl {
         template<typename T>
         AsyncJob<T> spawn(AsyncTask<T> task, spawn_options_t spawn_options = {}) {
             if (_scheduler->stopped())
-                return AsyncJob<T>::rejected_with(make_error("The scheduler is stopped."));
+                return AsyncJob<T>::rejected_with(make_error(
+                    ers::EAsyncError::SchedulerStopped,
+                    "The scheduler is stopped."));
 
 
             std::promise<Result<T>> promise;
@@ -152,7 +155,9 @@ namespace ers::impl {
                     break;
 
                 case BulkheadState::EAdmission::Rejected:
-                    return AsyncJob<T>::rejected_with(make_error("The bulkhead is full."));
+                    return AsyncJob<T>::rejected_with(make_error(
+                        ers::EAsyncError::BulkheadFull,
+                        "The bulkhead is full."));
             }
 
 

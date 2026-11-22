@@ -4,6 +4,9 @@
 #include <memory>
 #include <utility>
 
+// ers
+#include <erslib/core/localization/error.hpp>
+
 
 // locale_config_t
 
@@ -29,14 +32,14 @@ bool ers::impl::locale_config_t::same_as(const locale_config_t& other) const noe
 
 ers::Result<ers::impl::locale_config_ptr> ers::impl::make_locale_config(std::vector<std::string> locales, std::string_view fallback_locale) {
     if (locales.empty())
-        return make_error("There are no locales.");
+        return make_error(ers::ELocalizationError::NoLocales, "There are no locales.");
 
     auto out = std::make_shared<locale_config_t>();
     out->locales = std::move(locales);
 
     for (size_t id = 0; id < out->locales.size(); ++id)
         if (!out->ids.try_emplace(out->locales[id], id).second) {
-            return make_error("Locale '{}' is listed twice.",
+            return make_error(ers::ELocalizationError::DuplicateLocale, "Locale '{}' is listed twice.",
                 out->locales[id]);
         }
 
@@ -44,7 +47,9 @@ ers::Result<ers::impl::locale_config_ptr> ers::impl::make_locale_config(std::vec
     auto fallback = out->id_of(fallback_locale);
 
     if (!fallback) {
-        return make_error("The fallback locale '{}' is not among the locales.",
+        return make_error(
+            ers::ELocalizationError::UnknownFallback,
+            "The fallback locale '{}' is not among the locales.",
             fallback_locale);
     }
 
