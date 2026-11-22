@@ -69,7 +69,7 @@ namespace {
     }
 
     ers::AsyncTask<int> failing() {
-        co_return ers::make_error(std::errc::io_error, "boom");
+        co_return ers::make_error(std::make_error_code(std::errc::io_error), "boom");
     }
 
     ers::AsyncTask<int> throwing() {

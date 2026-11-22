@@ -46,16 +46,14 @@ std::vector<flux::impl::SlotBinding>& flux::impl::Layout::_materialize() {
 
 ers::Status flux::impl::Layout::_insert_at(SlotRef anchor, const SlotBinding& binding, ptrdiff_t offset) {
     if (!anchor)
-        return ers::make_error(flux::EQueryError::NullSlot, "Null anchor slot.");
+        return ers::make_error(EQueryError::NullSlot, "anchor");
 
     if (auto s = _check_insertable(binding.slot); !s)
         return s;
 
     const auto at = index_of(anchor);
     if (!at)
-        return ers::make_error(
-            flux::EQueryError::UnknownAnchor,
-            "Anchor slot '{}' is not in the layout.", anchor->name);
+        return ers::make_error(EQueryError::UnknownAnchor, "'{}'", anchor->name);
 
     auto& owned = _materialize();
     owned.emplace(owned.begin() + static_cast<ptrdiff_t>(*at) + offset, binding);
@@ -85,10 +83,10 @@ ers::Status flux::impl::Layout::append(SlotBinding binding) {
 
 ers::Status flux::impl::Layout::_check_insertable(SlotRef slot) const {
     if (!slot)
-        return ers::make_error(flux::EQueryError::NullSlot, "Null slot.");
+        return ers::make_error(EQueryError::NullSlot);
 
     if (contains(slot))
-        return ers::make_error(flux::EQueryError::DuplicateSlot, "Slot '{}' is already in the layout.", slot->name);
+        return ers::make_error(EQueryError::DuplicateSlot, "'{}'", slot->name);
 
     return ers::ok;
 }

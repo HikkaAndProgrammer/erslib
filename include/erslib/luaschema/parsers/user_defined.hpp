@@ -11,7 +11,7 @@ template<typename T>
 struct ers::impl::luaschema::parser_t<T> {
     Status exec(parser_context& /*ctx*/, sol::object obj, T& dst) const {
         if (!obj.is<sol::table>())
-            return make_error(ers::ELuaSchemaError::ExpectedTable, "Expected table");
+            return make_error(ELuaSchemaError::ExpectedTable);
 
         return T::get_layout().parse(obj.as<sol::table>(), &dst);
     }

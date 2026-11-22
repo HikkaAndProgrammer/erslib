@@ -12,10 +12,8 @@ flux::impl::ConflictUpdateClause::ConflictUpdateClause(std::vector<std::string> 
 }
 
 ers::Status flux::impl::ConflictUpdateClause::render(Context& ctx) const {
-    if (_columns.empty()) {
-        return ers::make_error(flux::EQueryError::EmptyColumns, "Slot '{}' needs at least one column.",
-            slot()->name);
-    }
+    if (_columns.empty())
+        return ers::make_error(EQueryError::EmptyColumns, "'{}'", slot()->name);
 
     ctx.query += "DO UPDATE SET ";
 

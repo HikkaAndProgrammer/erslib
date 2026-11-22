@@ -16,7 +16,7 @@ struct ers::impl::luaschema::parser_t<std::variant<Ts...>> {
     Status exec(parser_context& ctx, sol::object obj, std::variant<Ts...>& dst) const {
         bool matched = (this->_try_one<Ts>(ctx, obj, dst) || ...);
         if (!matched)
-            return make_error(ers::ELuaSchemaError::NoVariantMatched, "No variant alternative matched");
+            return make_error(ELuaSchemaError::NoVariantMatched);
         return ok;
     }
 

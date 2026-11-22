@@ -597,7 +597,7 @@ namespace utl::impl {
     ers::Result<Node> try_from_string(std::string_view chars, std::size_t recursion_limit = json_detail::default_recursion_limit) try {
         return from_string<Node>(chars, recursion_limit);
     } catch (const std::exception& e) {
-        return ers::make_error(ers::EJsonError::Malformed, "Malformed JSON: {}", e.what());
+        return ers::make_error(EJsonError::Malformed, e.what());
     }
 
     template<class Node = TNode<default_traits>>
@@ -606,7 +606,7 @@ namespace utl::impl {
     ers::Result<Node> try_from_file(const std::filesystem::path& path, std::size_t recursion_limit = json_detail::default_recursion_limit) try {
         return from_file<Node>(path, recursion_limit);
     } catch (const std::exception& e) {
-        return ers::make_error(ers::EJsonError::Io, "Cannot read '{}': {}", path.generic_string(), e.what());
+        return ers::make_error(EJsonError::Io, "'{}': {}", path.generic_string(), e.what());
     }
 
 

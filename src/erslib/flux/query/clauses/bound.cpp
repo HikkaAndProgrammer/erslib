@@ -15,7 +15,7 @@ flux::impl::BoundClause::BoundClause(SlotRef slot, i64 amount) :
 
 ers::Status flux::impl::BoundClause::render(Context& ctx) const {
     if (_amount < 0)
-        return ers::make_error(flux::EQueryError::NegativeBound, "Negative bound '{}' is not supported.", _amount);
+        return ers::make_error(EQueryError::NegativeBound, "'{}'", _amount);
     ctx.query += ctx.bind(make_binder(_amount));
     return ers::ok;
 }

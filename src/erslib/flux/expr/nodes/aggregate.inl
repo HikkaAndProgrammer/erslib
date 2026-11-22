@@ -21,12 +21,10 @@ namespace flux::impl::nodes {
 
         ers::Status render(Context& ctx) const override {
             if (!is_identifier(_name))
-                return ers::make_error(flux::EQueryError::InvalidName, "Invalid aggregate name '{}'.", _name);
+                return ers::make_error(EQueryError::InvalidName, "aggregate '{}'", _name);
 
             if (_what.ordered_set && _what.within_group.empty())
-                return ers::make_error(
-                    flux::EQueryError::MissingOrdering,
-                    "Ordered-set aggregate '{}' needs a WITHIN GROUP ordering.", _name);
+                return ers::make_error(EQueryError::MissingOrdering,"'{}' needs WITHIN GROUP", _name);
 
             ctx.query += _name;
             ctx.query += '(';

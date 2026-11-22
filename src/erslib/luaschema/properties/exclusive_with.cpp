@@ -16,7 +16,7 @@ ers::impl::luaschema::ExclusiveWithProperty::ExclusiveWithProperty(std::vector<s
 
 ers::Status ers::impl::luaschema::ExclusiveWithProperty::exec([[maybe_unused]] verify_context& ctx, sol::table table, std::string_view field) const {
     if (!table.get<std::optional<sol::object>>(field))
-        return ers::ok;
+        return ok;
 
 
     std::vector<std::string_view> intersection;
@@ -28,12 +28,12 @@ ers::Status ers::impl::luaschema::ExclusiveWithProperty::exec([[maybe_unused]] v
 
 
     if (!intersection.empty()) {
-        return ers::make_error(ers::ELuaSchemaError::ExclusiveFields, "Field '{}' is exclusive with fields {}",
+        return make_error(ELuaSchemaError::ExclusiveFields, "'{}' with {}",
             field, intersection);
     }
 
 
-    return ers::ok;
+    return ok;
 }
 
 

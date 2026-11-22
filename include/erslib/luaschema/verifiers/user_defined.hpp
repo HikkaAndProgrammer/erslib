@@ -10,7 +10,7 @@ template<ers::impl::luaschema::HasLayoutDescriptor T>
 struct ers::impl::luaschema::verifier_t<T> {
     Status exec(verify_context&, sol::object obj) const {
         if (!obj.is<sol::table>())
-            return make_error(ers::ELuaSchemaError::ExpectedTable, "Expected table");
+            return make_error(ELuaSchemaError::ExpectedTable);
         return T::get_layout().verify(obj.as<sol::table>());
     }
 };

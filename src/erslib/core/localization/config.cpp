@@ -32,25 +32,22 @@ bool ers::impl::locale_config_t::same_as(const locale_config_t& other) const noe
 
 ers::Result<ers::impl::locale_config_ptr> ers::impl::make_locale_config(std::vector<std::string> locales, std::string_view fallback_locale) {
     if (locales.empty())
-        return make_error(ers::ELocalizationError::NoLocales, "There are no locales.");
+        return make_error(ELocalizationError::NoLocales);
 
     auto out = std::make_shared<locale_config_t>();
     out->locales = std::move(locales);
 
-    for (size_t id = 0; id < out->locales.size(); ++id)
+    for (size_t id = 0; id < out->locales.size(); ++id) {
         if (!out->ids.try_emplace(out->locales[id], id).second) {
-            return make_error(ers::ELocalizationError::DuplicateLocale, "Locale '{}' is listed twice.",
-                out->locales[id]);
+            return make_error(ELocalizationError::DuplicateLocale, "'{}'", out->locales[id]);
         }
+    }
 
 
     auto fallback = out->id_of(fallback_locale);
 
     if (!fallback) {
-        return make_error(
-            ers::ELocalizationError::UnknownFallback,
-            "The fallback locale '{}' is not among the locales.",
-            fallback_locale);
+        return make_error(ELocalizationError::UnknownFallback, "'{}'", fallback_locale);
     }
 
     out->fallback_locale_id = *fallback;

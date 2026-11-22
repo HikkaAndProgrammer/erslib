@@ -37,7 +37,7 @@ namespace utl::impl {
 
         template<typename T, std::invocable Describe>
         static type<T> fail(Describe&& describe) {
-            return ers::make_error(ers::EJsonError::Mismatch, std::invoke(std::forward<Describe>(describe)));
+            return ers::make_error(EJsonError::Mismatch, std::invoke(std::forward<Describe>(describe)));
         }
 
         template<typename T, typename Inner>

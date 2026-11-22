@@ -33,7 +33,7 @@ namespace flux::impl::crud {
         // Executors
 
         ers::Status render(Context&) const override {
-            return ers::make_error(flux::EQueryError::Failed, "{}", _message);
+            return ers::make_error(EQueryError::Failed, _message);
         }
 
 

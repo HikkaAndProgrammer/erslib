@@ -32,9 +32,9 @@ namespace ers::impl {
         try {
             std::rethrow_exception(error);
         } catch (const std::exception& e) {
-            return make_error(ers::EAsyncError::TaskThrew, "AsyncTask threw an exception: {}", e.what());
+            return make_error(EAsyncError::TaskThrew, e.what());
         } catch (...) {
-            return make_error(ers::EAsyncError::TaskThrew, "AsyncTask threw an unknown exception.");
+            return make_error(EAsyncError::TaskThrew, "unknown exception");
         }
     }
 
@@ -42,7 +42,7 @@ namespace ers::impl {
     template<typename T>
     Result<T> sync_wait(AsyncTask<T> task) {
         boost::asio::io_context io;
-        Result<T> out = make_error(ers::EAsyncError::SyncWaitIncomplete, "sync_wait did not finish");
+        Result<T> out = make_error(EAsyncError::SyncWaitIncomplete);
 
         boost::asio::co_spawn(io, std::move(task), [&](std::exception_ptr error, Result<T> value) {
             out = to_result<T>(error, std::move(value));

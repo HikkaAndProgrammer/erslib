@@ -14,7 +14,7 @@ template<typename T>
 struct ers::impl::luaschema::parser_t<std::vector<T>> {
     Status exec(parser_context& ctx, sol::object obj, std::vector<T>& dst) const {
         if (!obj.is<sol::table>())
-            return make_error(ers::ELuaSchemaError::ExpectedArray, "Expected array table");
+            return make_error(ELuaSchemaError::ExpectedArray);
 
         auto arr = obj.as<sol::table>();
         dst.reserve(arr.size());

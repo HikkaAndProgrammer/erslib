@@ -8,7 +8,7 @@ ers::Result<std::string> ers::impl::make_localization_key(const fs::path& relati
     auto extension = relative.extension().string();
 
     if (extension.size() < 2) {
-        return make_error(ers::ELocalizationError::BadPath, "'{}' has no extension to name it by.",
+        return make_error(ELocalizationError::BadPath, "'{}' has no extension to name it by.",
             relative.generic_string());
     }
 

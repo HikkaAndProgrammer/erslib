@@ -33,7 +33,7 @@ ers::Result<utl::impl::JsonValidator> utl::impl::JsonValidator::compile(const TN
     return JsonValidator(std::move(out));
 }
 catch (const std::exception& e) {
-    return ers::make_error(ers::EJsonError::InvalidSchema, "Invalid JSON schema: {}", e.what());
+    return ers::make_error(EJsonError::InvalidSchema, e.what());
 }
 
 
@@ -59,8 +59,8 @@ ers::Status utl::impl::JsonValidator::validate(const TNode<Traits>& document) co
         message += error.description;
     }
 
-    return ers::make_error(ers::EJsonError::ValidationFailed, "{}", message);
+    return ers::make_error(EJsonError::ValidationFailed, std::move(message));
 }
 catch (const std::exception& e) {
-    return ers::make_error(ers::EJsonError::ValidationFailed, "JSON validation failed: {}", e.what());
+    return ers::make_error(EJsonError::ValidationFailed, e.what());
 }

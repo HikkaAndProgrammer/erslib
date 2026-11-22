@@ -30,7 +30,7 @@ namespace ers::impl {
         static Result<T> try_parse(std::string_view text) try {
             return std::invoke(Plain, text);
         } catch (const std::exception& e) {
-            return make_error(ers::EConvertError::ParseFailed, "{}", e.what());
+            return make_error(EConvertError::ParseFailed, e.what());
         }
 
         static maybe<T> maybe_parse(std::string_view text) try {

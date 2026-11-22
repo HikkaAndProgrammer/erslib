@@ -134,10 +134,8 @@ ers::Status flux::impl::QueryBuilder::_render_custom(Context& ctx, const SlotBin
 
 ers::Status flux::impl::QueryBuilder::_validate() const {
     for (const auto& it : _clauses) {
-        if (!_layout.contains(it->slot())) {
-            return ers::make_error(flux::EQueryError::ForeignSlot, "Slot '{}' is not part of this statement",
-                it->slot()->name);
-        }
+        if (!_layout.contains(it->slot()))
+            return ers::make_error(EQueryError::ForeignSlot, "'{}'", it->slot()->name);
     }
 
     for (const auto& binding : _layout.bindings()) {
@@ -146,7 +144,7 @@ ers::Status flux::impl::QueryBuilder::_validate() const {
 
         for (const auto other : binding.excludes) {
             if (_has(other)) {
-                return ers::make_error(flux::EQueryError::SlotConflict, "Slots '{}' and '{}' can't be used together.",
+                return ers::make_error(EQueryError::SlotConflict, "'{}' and '{}'",
                     binding.slot->name, other->name);
             }
         }

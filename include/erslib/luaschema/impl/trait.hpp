@@ -42,10 +42,10 @@ namespace ers::impl::luaschema {
         static constexpr sol::type expected_type = impl::luaschema::sol_type_for<T>();
 
         if (!obj.valid())
-            return make_error(ers::ELuaSchemaError::InvalidObject, "Object is not valid or nil");
+            return make_error(ELuaSchemaError::InvalidObject);
 
         if (obj.get_type() != expected_type)
-            return make_error(ers::ELuaSchemaError::UnexpectedType, "Object has unexpected type");
+            return make_error(ELuaSchemaError::UnexpectedType);
 
         return ok;
     }

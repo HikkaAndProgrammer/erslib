@@ -47,7 +47,7 @@ namespace ers::impl {
 
         ~Completion() {
             if (_pending)
-                _promise.set_value(make_error(ers::EAsyncError::Dropped, "The job was dropped before it finished."));
+                _promise.set_value(make_error(EAsyncError::Dropped));
 
             if (_control)
                 _control->finish();
@@ -130,9 +130,7 @@ namespace ers::impl {
         template<typename T>
         AsyncJob<T> spawn(AsyncTask<T> task, spawn_options_t spawn_options = {}) {
             if (_stopped)
-                return AsyncJob<T>::rejected_with(make_error(
-                    ers::EAsyncError::SchedulerStopped,
-                    "The scheduler is stopped."));
+                return AsyncJob<T>::rejected_with(make_error(EAsyncError::SchedulerStopped));
 
 
             std::promise<Result<T>> promise;

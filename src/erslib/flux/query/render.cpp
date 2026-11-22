@@ -7,7 +7,7 @@
 
 ers::Status flux::impl::check_identifier(std::string_view name, SlotRef slot) {
     if (!is_identifier(name)) {
-        return ers::make_error(flux::EQueryError::InvalidIdentifier, "Invalid identifier '{}' in slot '{}'.",
+        return ers::make_error(EQueryError::InvalidIdentifier, "'{}' in slot '{}'",
             name, slot ? slot->name : "<null>");
     }
 

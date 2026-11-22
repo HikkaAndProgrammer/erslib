@@ -185,7 +185,7 @@ namespace {
 
 ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<std::string> args, process_options_t options) {
     if (args.empty())
-        co_return make_error(ers::EProcessError::EmptyCommand, "The process command is empty.");
+        co_return make_error(EProcessError::EmptyCommand);
 
     ignore_sigpipe();
 
@@ -202,7 +202,7 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
         executable = proc::environment::find_executable(args[0]);
 
     if (executable.empty()) {
-        co_return make_error(ers::EProcessError::ExecutableNotFound, "Could not start '{}': executable not found.",
+        co_return make_error(EProcessError::ExecutableNotFound, "'{}'",
             args[0]);
     }
 
@@ -234,7 +234,7 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
         );
 
     if (error) {
-        co_return make_error(ers::EProcessError::StartFailed, "Could not start '{}': {}",
+        co_return make_error(EProcessError::StartFailed, "'{}': {}",
             args[0], error.message());
     }
 
@@ -252,17 +252,15 @@ ers::impl::AsyncTask<ers::process_output_t> ers::impl::run_process(std::vector<s
         && supervise(child, options, state)
     );
 
-    if (out_failure || err_failure) {
-        co_return make_error(ers::EProcessError::ReadFailed, "Could not read the process output: {}",
-            (out_failure ? out_failure : err_failure).message());
-    }
+    if (out_failure || err_failure)
+        co_return make_error(EProcessError::ReadFailed, (out_failure ? out_failure : err_failure).message());
 
 
     if (state.cancelled)
-        co_return make_error(ers::EProcessError::Cancelled, "The process was cancelled.");
+        co_return make_error(EProcessError::Cancelled);
 
     if (state.timed_out)
-        co_return make_error(ers::EProcessError::TimedOut, "The process timed out.");
+        co_return make_error(EProcessError::TimedOut);
 
 
     output.exit_code = state.exit_code;

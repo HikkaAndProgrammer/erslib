@@ -23,20 +23,16 @@ ers::Status ers::impl::luaschema::OneOfProperty::verify(sol::table table) const 
     }
 
     if (present.size() > 1) {
-        return ers::make_error(
-            ers::ELuaSchemaError::OneOfRequired,
-            "Exactly one of fields {} must be defined, but several are: {}",
+        return make_error(ELuaSchemaError::OneOfRequired, "Exactly one of fields {} must be defined, but several are: {}",
             _names, present);
     }
 
     if (present.empty()) {
-        return ers::make_error(
-            ers::ELuaSchemaError::OneOfRequired,
-            "Exactly one of fields {} must be defined, but none is",
+        return make_error(ELuaSchemaError::OneOfRequired, "Exactly one of fields {} must be defined, but none is",
             _names);
     }
 
-    return ers::ok;
+    return ok;
 }
 
 

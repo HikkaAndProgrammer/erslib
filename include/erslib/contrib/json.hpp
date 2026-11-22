@@ -6,6 +6,7 @@
 #include <erslib/contrib/json/impl.hpp>
 
 #include <erslib/contrib/json/concept.hpp>
+#include <erslib/contrib/json/error.hpp>
 #include <erslib/contrib/json/schema.hpp>
 #include <erslib/contrib/json/traits.hpp>
 
@@ -13,6 +14,8 @@
 // Exports ---------------------------------------------------------------------
 
 namespace utl {
+    using impl::EJsonError;
+
     using impl::EFormat;
     using impl::ENodeType;
     using impl::type_label;

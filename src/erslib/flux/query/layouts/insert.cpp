@@ -31,9 +31,7 @@ namespace {
 
             if (!assign) {
                 ERS_TRY((*clause)->render(ctx));
-                return ers::make_error(
-                    flux::EQueryError::InvalidSetItem,
-                    "Only assignments are allowed in the SET of INSERT.");
+                return ers::make_error(EQueryError::InvalidSetItem, "SET of INSERT");
             }
 
             assigns.push_back(assign);

@@ -50,15 +50,13 @@ namespace flux::impl {
             } else
                 return std::invoke(std::forward<Fn>(fn));
         } catch (const pqxx::broken_connection& e) {
-            return ers::make_crit(
-                flux::EConnectionError::ConnectionLost,
-                "'{}': connection lost: {}", label, ers::util::trim(e.what()));
+            return ers::make_crit(EConnectionError::ConnectionLost, "'{}': connection lost: {}",
+                label, ers::util::trim(e.what()));
         } catch (const pqxx::sql_error& e) {
-            return ers::make_error(
-                flux::EConnectionError::StatementFailed,
-                "'{}' failed [{}]: {}", label, e.sqlstate(), ers::util::trim(e.what()));
+            return ers::make_error(EConnectionError::StatementFailed, "'{}' failed [{}]: {}",
+                label, e.sqlstate(), ers::util::trim(e.what()));
         } catch (const std::exception& e) {
-            return ers::make_error(flux::EConnectionError::Failed, "'{}' failed: {}", label, e.what());
+            return ers::make_error(EConnectionError::Failed, "'{}' failed: {}", label, e.what());
         }
     }
 

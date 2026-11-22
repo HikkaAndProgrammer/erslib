@@ -85,7 +85,7 @@ namespace flux::impl::nodes {
 
         ers::Status render(Context& ctx) const override {
             if (!is_type_name(_type))
-                return ers::make_error(flux::EQueryError::InvalidName, "Invalid type name '{}' in a cast.", _type);
+                return ers::make_error(EQueryError::InvalidName, "type '{}' in a cast", _type);
 
             ERS_TRY(_operand.render(ctx, EPrecedence::Cast));
 

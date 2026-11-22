@@ -36,7 +36,7 @@ ers::Result<std::string> ers::impl::crypto::sha256_hex_file(const fs::path& path
     auto stream = std::ifstream(path, std::ios::binary);
 
     if (!stream)
-        return make_error(ers::ECryptoError::CannotRead, "Cannot read '{}'.", path.generic_string());
+        return make_error(ECryptoError::CannotRead, "'{}'", path.generic_string());
 
     auto hasher = Botan::HashFunction::create_or_throw("SHA-256");
     auto buffer = std::array<char, chunk_size>();
@@ -49,7 +49,7 @@ ers::Result<std::string> ers::impl::crypto::sha256_hex_file(const fs::path& path
     }
 
     if (stream.bad())
-        return make_error(ers::ECryptoError::ReadFailed, "Read of '{}' failed.", path.generic_string());
+        return make_error(ECryptoError::ReadFailed, "'{}'", path.generic_string());
 
     return Botan::hex_encode(hasher->final(), false);
 }

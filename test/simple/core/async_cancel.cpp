@@ -67,7 +67,7 @@ namespace {
         auto [ec] = co_await timer.async_wait(asio::as_tuple(asio::use_awaitable));
 
         if (ec)
-            co_return ers::make_error(std::errc::operation_canceled, "woke up: {}", ec.message());
+            co_return ers::make_error(std::make_error_code(std::errc::operation_canceled), "woke up: {}", ec.message());
 
         co_return 0;
     }

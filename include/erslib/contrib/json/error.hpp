@@ -16,13 +16,6 @@
 
 // Implementation --------------------------------------------------------------
 
-ERS_MAKE_ERROR_CODES(ers::impl, EJsonError, "json", ERS_JSON_ERRORS)
+ERS_MAKE_ERROR_CODES(utl::impl, EJsonError, "json", ERS_JSON_ERRORS)
 
 #undef ERS_JSON_ERRORS
-
-
-// Exports ---------------------------------------------------------------------
-
-namespace ers {
-    using impl::EJsonError;
-}

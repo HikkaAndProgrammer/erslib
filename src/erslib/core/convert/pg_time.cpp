@@ -135,7 +135,7 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
 
     size_t year_digits = count_digits(s);
     if (year_digits < 4 || year_digits > 5)
-        return make_error(ers::EConvertError::MalformedTimestamp, "Malformed timestamp '{}': bad year.", text);
+        return make_error(EConvertError::MalformedTimestamp, "'{}': bad year", text);
 
 
     read_digits(s, year_digits, year);
@@ -152,20 +152,20 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
         && read_digits(s, 2, second);
 
     if (!date_time_ok)
-        return make_error(ers::EConvertError::MalformedTimestamp, "Malformed timestamp '{}'.", text);
+        return make_error(EConvertError::MalformedTimestamp, "'{}'", text);
 
 
     int microsecond = 0;
     if (read_char(s, '.')) {
         const size_t n = count_digits(s);
-        if (n == 0 || n > 6)
-            return make_error(
-                ers::EConvertError::MalformedTimestamp,
-                "Malformed timestamp '{}': bad fractional seconds.", text);
+        if (n == 0 || n > 6) {
+            return make_error(EConvertError::MalformedTimestamp, "'{}': bad fractional seconds", text);
+        }
 
         read_digits(s, n, microsecond);
-        for (size_t i = n; i < 6; ++i)
+        for (size_t i = n; i < 6; ++i) {
             microsecond *= 10;
+        }
     }
 
 
@@ -175,9 +175,7 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
     else if (read_char(s, '-'))
         sign = -1;
     else if (!read_char(s, 'Z'))
-        return make_error(
-            ers::EConvertError::MalformedTimestamp,
-            "Malformed timestamp '{}': missing UTC offset.", text);
+        return make_error(EConvertError::MalformedTimestamp, "'{}': missing UTC offset", text);
 
 
     int out_hour = 0, out_minute = 0, out_second = 0;
@@ -190,23 +188,19 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
         }
 
         if (!offset_ok || out_hour > pg_max_offset_hours || out_minute > 59 || out_second > 59)
-            return make_error(
-                ers::EConvertError::MalformedTimestamp,
-                "Malformed timestamp '{}': bad UTC offset.", text);
+            return make_error(EConvertError::MalformedTimestamp, "'{}': bad UTC offset", text);
     }
 
 
     if (read_char(s, ' ')) {
         if (s != "BC" || year == 0)
-            return make_error(ers::EConvertError::MalformedTimestamp, "Malformed timestamp '{}'.", text);
+            return make_error(EConvertError::MalformedTimestamp, "'{}'", text);
         s = {};
         year = 1 - year;
     }
 
     if (!s.empty())
-        return make_error(
-            ers::EConvertError::MalformedTimestamp,
-            "Malformed timestamp '{}': trailing characters.", text);
+        return make_error(EConvertError::MalformedTimestamp, "'{}': trailing characters", text);
 
 
     std::chrono::year_month_day ymd(
@@ -216,9 +210,7 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
     );
 
     if (!ymd.ok() || hour > 23 || minute > 59 || second > 59)
-        return make_error(
-            ers::EConvertError::MalformedTimestamp,
-            "Malformed timestamp '{}': field out of range.", text);
+        return make_error(EConvertError::MalformedTimestamp, "'{}': field out of range", text);
 
 
     pg_time_t local = std::chrono::sys_days(ymd)
@@ -232,7 +224,7 @@ ers::Result<ers::timestamp_t> ers::impl::timestamp_from_iso8601(std::string_view
     pg_time_t utc = local - offset;
 
     if (!fits_timestamp(utc))
-        return make_error(ers::EConvertError::OutOfRange, "Timestamp '{}' is out of range.", text);
+        return make_error(EConvertError::OutOfRange, "timestamp '{}'", text);
 
 
     return timestamp_t(std::chrono::floor<duration_t>(utc.time_since_epoch()));
@@ -264,13 +256,13 @@ ers::Result<ers::date_t> ers::impl::date_from_iso8601(std::string_view text) {
     size_t year_digits = count_digits(s);
 
     if (year_digits < 4 || year_digits > 5)
-        return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}': bad year.", text);
+        return make_error(EConvertError::MalformedDate, "'{}': bad year", text);
 
 
     read_digits(s, year_digits, year);
 
     if (year == 0)
-        return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}': there is no year zero.", text);
+        return make_error(EConvertError::MalformedDate, "'{}': there is no year zero", text);
 
 
     bool ok = read_char(s, '-')
@@ -279,18 +271,18 @@ ers::Result<ers::date_t> ers::impl::date_from_iso8601(std::string_view text) {
         && read_digits(s, 2, day);
 
     if (!ok)
-        return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}'.", text);
+        return make_error(EConvertError::MalformedDate, "'{}'", text);
 
     if (read_char(s, ' ')) {
         if (s != "BC")
-            return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}'.", text);
+            return make_error(EConvertError::MalformedDate, "'{}'", text);
 
         s = {};
         year = 1 - year;
     }
 
     if (!s.empty())
-        return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}': trailing characters.", text);
+        return make_error(EConvertError::MalformedDate, "'{}': trailing characters", text);
 
 
     std::chrono::year_month_day ymd {
@@ -300,7 +292,7 @@ ers::Result<ers::date_t> ers::impl::date_from_iso8601(std::string_view text) {
     };
 
     if (!ymd.ok())
-        return make_error(ers::EConvertError::MalformedDate, "Malformed date '{}': field out of range", text);
+        return make_error(EConvertError::MalformedDate, "'{}': field out of range", text);
 
     return date_t(ymd);
 }

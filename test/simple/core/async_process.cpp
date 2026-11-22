@@ -17,6 +17,7 @@
 // ers
 #include <erslib/core/filesystem.hpp>
 #include <erslib/core/algorithm/args.hpp>
+#include <erslib/core/async/error.hpp>
 #include <erslib/core/async/process.hpp>
 #include <erslib/core/async/scheduler.hpp>
 
@@ -103,7 +104,8 @@ ERS_TEST_CASE("signal", "[async]") {
 ERS_TEST_CASE("missing", "[async]") {
     auto result = ers::sync_wait(ers::run_command("/nonexistent/ers-binary"));
 
-    REQUIRE(mentions(result, "Could not start"));
+    REQUIRE(!result);
+    REQUIRE(result.error().code() == ers::EProcessError::ExecutableNotFound);
 }
 
 ERS_TEST_CASE("path", "[async]") {
@@ -117,7 +119,8 @@ ERS_TEST_CASE("path", "[async]") {
 ERS_TEST_CASE("not executable", "[async]") {
     auto result = ers::sync_wait(ers::run_process({ "/etc/hostname" }));
 
-    REQUIRE(mentions(result, "Could not start"));
+    REQUIRE(!result);
+    REQUIRE(result.error().code() == ers::EProcessError::ExecutableNotFound);
 }
 
 ERS_TEST_CASE("empty", "[async]") {

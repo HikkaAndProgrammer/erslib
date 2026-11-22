@@ -105,16 +105,14 @@ ers::Result<flux::impl::migration_t> flux::impl::parse_migration(std::string_vie
         out.id = match[1].str();
         out.on = EApplyOn::Repeatable;
     } else {
-        return ers::make_error(
-            flux::EMigrationError::BadName,
+        return ers::make_error(EMigrationError::BadName,
             "'{}' is not a migration name, expected 'NNNN_name.{{existing|fresh|always}}.sql' or 'name.repeatable.sql'.",
             filename);
     }
 
 
     if (std::regex_search(sql, transaction_control)) {
-        return ers::make_error(
-            flux::EMigrationError::ForbiddenStatement,
+        return ers::make_error(EMigrationError::ForbiddenStatement,
             "'{}': '{{BEGIN|COMMIT|ROLLBACK}}' are not allowed, the whole run is one transaction.",
             out.id);
     }
@@ -156,8 +154,7 @@ ers::Result<flux::impl::migration_set_t> flux::impl::load_migrations(const fs::p
 
     if (auto duplicate = std::ranges::adjacent_find(out.versioned, {}, &migration_t::version);
         duplicate != out.versioned.end()) {
-        return ers::make_error(
-            flux::EMigrationError::DuplicateVersion,
+        return ers::make_error(EMigrationError::DuplicateVersion,
             "'{}': version {} is used by more than one migration.",
             dir.string(), *duplicate->version);
     }

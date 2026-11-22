@@ -10,6 +10,7 @@
 
 // ers
 #include <erslib/flux.hpp>
+#include <erslib/flux/error.hpp>
 #include <erslib/flux/query_builder.hpp>
 
 // test
@@ -125,7 +126,7 @@ ERS_TEST_CASE("insert with set: mistakes", "[flux]") {
     const auto mixed = (insert_into("t") | columns("a") | values(1) | set("b", 2, "c", 3)).to_sql();
 
     REQUIRE_FALSE(mixed.has_value());
-    CHECK(contains(mixed.error().to_string(), "can't be used together"));
+    CHECK(mixed.error().code() == flux::EQueryError::SlotConflict);
 
     CHECK_FALSE((insert_into("t") | set("x; --", 1, "b", 2)).to_sql().has_value());
     CHECK_FALSE((insert_into("t") | set("a", 1, "1", 2)).to_sql().has_value());

@@ -69,8 +69,8 @@ namespace ers::impl {
 
 // Declares an error enum together with its std::error_code integration and category. Use it at global scope:
 //
-//     #define MY_ERRORS(X) \
-//         X(NotFound, "not found") \
+//     #define MY_ERRORS(X)
+//         X(NotFound, "not found")
 //         X(Broken, "broken")
 //
 //     ERS_MAKE_ERROR_CODES(my::ns, EMyError, "my", MY_ERRORS)
@@ -82,7 +82,7 @@ namespace ers::impl {
     } \
     \
     template<> \
-    struct ::ers::impl::error_domain<NS::ENUM> { \
+    struct ers::impl::error_domain<NS::ENUM> { \
         static constexpr std::string_view name = DOMAIN; \
         \
         static constexpr std::string_view describe(NS::ENUM what) noexcept { \

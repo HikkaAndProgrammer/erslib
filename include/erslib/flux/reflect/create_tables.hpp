@@ -40,9 +40,8 @@ namespace flux::impl::reflect {
                 stage = "commit";
             }, std::format("{}/Create", S::name));
         } catch (const std::exception& e) {
-            return ers::make_error(
-                flux::EMigrationError::SchemaCreateFailed,
-                "Creating schema '{}' failed at '{}': {}", S::name, stage, e.what());
+            return ers::make_error(EMigrationError::SchemaCreateFailed, "Creating schema '{}' failed at '{}': {}",
+                S::name, stage, e.what());
         }
 
         return ers::ok;

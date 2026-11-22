@@ -42,7 +42,7 @@ namespace {
                     auto at = line.find(" = ");
 
                     if (at == std::string_view::npos)
-                        return ers::make_error(std::errc::invalid_argument, "'{}' has no ' = '.", line);
+                        return ers::make_error(std::make_error_code(std::errc::invalid_argument), "'{}' has no ' = '.", line);
 
                     out.push_back({ .key = std::string(line.substr(0, at)), .text = std::string(line.substr(at + 3)) });
                 }
@@ -87,7 +87,7 @@ namespace {
 
             for (auto key : palette.ids()) {
                 if (!palette.hex(key))
-                    return ers::make_error(std::errc::invalid_argument, "Colour '{}' has no hex.", key);
+                    return ers::make_error(std::make_error_code(std::errc::invalid_argument), "Colour '{}' has no hex.", key);
             }
 
             return ers::ok;
@@ -619,7 +619,7 @@ ERS_TEST_CASE("invalid domain", "[core][fs]") {
     CHECK(report->loaded == std::vector<std::string> { "pages" });
     REQUIRE(report->rejected.size() == 1);
     CHECK(report->rejected[0].domain == "colors");
-    CHECK(report->rejected[0].reason == "Colour 'black' has no hex.");
+    CHECK(report->rejected[0].reason.contains("Colour 'black' has no hex."));
 
     CHECK(domain_of(table, "colors") == colors);
     CHECK(table["en"]["pages"]["html.about"] == "About us");
@@ -688,7 +688,7 @@ ERS_TEST_CASE("validators", "[core][fs]") {
 
     REQUIRE(table.add_validator("mail", [](const ers::DomainPtr& mail) -> ers::Status {
         if (!mail->find("txt.new_order", mail->config().fallback_locale_id))
-        return ers::make_error(std::errc::no_message, "No new order mail.");
+        return ers::make_error(std::make_error_code(std::errc::no_message), "No new order mail.");
         return ers::ok;
     }));
 

@@ -47,10 +47,10 @@ namespace {
                 if (e.code() == boost::asio::error::operation_aborted)
                     throw;
 
-                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "The periodic task '{}' failed: {}",
+                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "'{}': {}",
                     options.name, e.what());
             } catch (const std::exception& e) {
-                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "The periodic task '{}' failed: {}",
+                result = ers::make_error(ers::EAsyncError::PeriodicFailed, "'{}': {}",
                     options.name, e.what());
             }
 
@@ -118,7 +118,7 @@ ers::Scheduler& ers::impl::AsyncRuntime::scheduler() noexcept {
 
 ers::Status ers::impl::AsyncRuntime::start() {
     if (_state != EState::Idle)
-        return make_error(ers::EAsyncError::AlreadyStarted, "The runtime was already started.");
+        return make_error(EAsyncError::AlreadyStarted);
 
 
     AsyncRegistry registry(*this);
@@ -133,7 +133,7 @@ ers::Status ers::impl::AsyncRuntime::start() {
             continue;
 
 
-        auto error = make_error(ers::EAsyncError::ServiceStartFailed, "The service '{}' failed to start: {}",
+        auto error = make_error(EAsyncError::ServiceStartFailed, "'{}': {}",
             _services[i]->name(), result.error().message());
 
         while (i-- > 0)
@@ -171,7 +171,7 @@ void ers::impl::AsyncRuntime::stop(std::chrono::milliseconds grace) {
         job.cancel();
 
     for (auto& job : _periodic)
-        job.wait_for(grace);
+        std::ignore = job.wait_for(grace);
 
     if (started) {
         for (size_t i = _services.size(); i-- > 0;)

@@ -12,7 +12,7 @@ template<typename T>
 struct ers::impl::luaschema::verifier_t<std::vector<T>> {
     Status exec(verify_context& ctx, sol::object obj) const {
         if (!obj.is<sol::table>())
-            return make_error(ers::ELuaSchemaError::ExpectedArray, "Expected array table");
+            return make_error(ELuaSchemaError::ExpectedArray);
 
         auto arr = obj.as<sol::table>();
 

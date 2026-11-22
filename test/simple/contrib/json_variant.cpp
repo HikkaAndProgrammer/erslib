@@ -55,6 +55,9 @@ namespace {
     struct [[=utl::json_object, =utl::json_tag("renamed")]] renamed_t { [[=utl::json_key("type")]] std::string kind; };
 
     struct [[=utl::json_object, =utl::json_tag("boom")]] boom_t {
+        // not trivially copyable: otherwise libstdc++ builds the new value aside and never leaves the variant valueless
+        boom_t(const boom_t&) {}
+
         boom_t() {
             throw 1;
         }

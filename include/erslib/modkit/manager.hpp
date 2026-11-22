@@ -60,7 +60,7 @@ namespace ers::impl::modkit {
 
 
             if (!result)
-                return make_error(ers::EModkitError::ElementNotFound, "Element with key {} is not found", k);
+                return make_error(EModkitError::ElementNotFound, "key {}", k);
 
 
             return std::move(*result);

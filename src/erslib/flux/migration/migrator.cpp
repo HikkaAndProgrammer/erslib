@@ -62,8 +62,7 @@ ers::Result<flux::impl::migration_report_t> flux::impl::Migrator::run() && {
 
     if (_state == EDatabaseState::Legacy) {
         if (!_options.adopt) {
-            return ers::make_error(
-                flux::EMigrationError::UnrecordedSchema,
+            return ers::make_error(EMigrationError::UnrecordedSchema,
                 "Schema '{}' has tables, but flux has no records of it. "
                 "Make sure the database matches the code and run once with `adopt`",
                 _target.schema
@@ -140,16 +139,14 @@ ers::Status flux::impl::Migrator::_validate_directives() const {
     for (const auto& migration : _set.versioned) {
         for (const auto& claim : migration.claims)
             if (!_get_declared(claim.table)) {
-                return ers::make_error(
-                    flux::EMigrationError::ClaimsUndeclared,
+                return ers::make_error(EMigrationError::ClaimsUndeclared,
                     "'{}' claims '{}', which is not declared in code.",
                     _make_subject(migration), claim.table);
             }
 
         for (const auto& table : migration.drops)
             if (_get_declared(table)) {
-                return ers::make_error(
-                    flux::EMigrationError::DropsDeclared,
+                return ers::make_error(EMigrationError::DropsDeclared,
                     "'{}' drops '{}', which is still declared in code.",
                     _make_subject(migration), table);
             }
@@ -165,7 +162,7 @@ ers::Status flux::impl::Migrator::_execute(std::string_view what, std::string_vi
     _database.execute(sql);
     return ers::ok;
 } catch (const std::exception& e) {
-    return ers::make_error(flux::EMigrationError::StepFailed, "'{}' failed: {}",
+    return ers::make_error(EMigrationError::StepFailed, "'{}' failed: {}",
         what, ers::util::trim(e.what()));
 }
 
@@ -289,7 +286,7 @@ ers::Status flux::impl::Migrator::_reconcile_declarations() {
 
 
     if (!mismatches.empty())
-        return ers::make_error(flux::EMigrationError::Mismatch, describe_mismatches(mismatches));
+        return ers::make_error(EMigrationError::Mismatch, describe_mismatches(mismatches));
 
     return ers::ok;
 }

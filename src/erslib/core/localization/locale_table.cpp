@@ -73,8 +73,7 @@ namespace {
         std::ifstream file(path, std::ios::binary);
 
         if (!file) {
-            return ers::make_error(ers::ELocalizationError::Io, "Cannot open '{}'.",
-                path.generic_string());
+            return ers::make_error(ers::ELocalizationError::Io, "'{}'", path.generic_string());
         }
 
         return std::string(std::istreambuf_iterator(file), {});
@@ -260,17 +259,17 @@ namespace {
             size_t locale_id = file.locale_id;
 
             if (!locale.empty()) {
-                if (file.locale_id != ers::impl::common_locale_id)
-                    return ers::make_error(
-                        ers::ELocalizationError::InvalidKey,
+                if (file.locale_id != ers::impl::common_locale_id) {
+                    return ers::make_error(ers::ELocalizationError::InvalidKey,
                         "'{}': the locale is already set by the path.", raw_key);
+                }
 
                 auto id = config.id_of(locale);
 
-                if (!id)
-                    return ers::make_error(
-                        ers::ELocalizationError::UnknownLocale,
-                        "'{}': unknown locale '{}'.", raw_key, locale);
+                if (!id) {
+                    return ers::make_error(ers::ELocalizationError::UnknownLocale, "'{}': unknown locale '{}'.",
+                        raw_key, locale);
+                }
 
                 locale_id = *id;
             }
@@ -300,7 +299,7 @@ auto ers::impl::LocaleTable::reload(const fs::path& root) -> Result<reload_repor
     std::scoped_lock lock(_reloading_mutex);
 
     if (!fs::is_directory(root)) {
-        return make_error(ers::ELocalizationError::BadPath, "'{}' is not a folder.",
+        return make_error(ELocalizationError::BadPath, "'{}' is not a folder.",
             root.generic_string());
     }
 
@@ -471,7 +470,7 @@ auto ers::impl::LocaleTable::reload(const fs::path& root) -> Result<reload_repor
 
     return report;
 } catch (const std::exception& e) {
-    return make_error(ers::ELocalizationError::Failed, "Cannot reload strings from '{}': {}",
+    return make_error(ELocalizationError::Failed, "Cannot reload strings from '{}': {}",
         root.generic_string(), e.what());
 }
 
@@ -520,7 +519,7 @@ ers::Status ers::impl::LocaleTable::_validate(std::string_view domain, const Dom
         try {
             ERS_TRY(validator(built));
         } catch (const std::exception& e) {
-            return make_error(ers::ELocalizationError::Failed, "{}", e.what());
+            return make_error(ELocalizationError::Failed, e.what());
         }
     }
 
@@ -533,9 +532,7 @@ ers::Status ers::impl::LocaleTable::_validate(std::string_view domain, const Dom
 
 ers::Status ers::impl::LocaleTable::enable_references(std::string_view domain, reference_options_t options) {
     if (options.marker == '\0' || options.max_depth == 0)
-        return make_error(
-            ers::ELocalizationError::InvalidReference,
-            "References need a marker and a depth of at least 1.");
+        return make_error(ELocalizationError::InvalidReference, "References need a marker and a depth of at least 1.");
 
     std::scoped_lock lock(_reloading_mutex);
 
@@ -557,7 +554,7 @@ ers::Status ers::impl::LocaleTable::_resolve(std::string_view domain, Domain& bu
     try {
         return built._resolve_references(it->second);
     } catch (const std::exception& e) {
-        return make_error(ers::ELocalizationError::Failed, "{}", e.what());
+        return make_error(ELocalizationError::Failed, e.what());
     }
 }
 

@@ -64,12 +64,10 @@ ers::Result<std::vector<std::string>> ers::impl::split_args(std::string_view lin
 
 
     if (escaped)
-        return make_error(ers::ESplitError::TrailingBackslash, "Trailing backslash.");
+        return make_error(ESplitError::TrailingBackslash);
 
     if (quote != '\0')
-        return make_error(
-            ers::ESplitError::UnterminatedQuote,
-            "Unterminated {} quote.", quote == '"' ? "double" : "single");
+        return make_error(ESplitError::UnterminatedQuote, "{}", quote == '"' ? "double" : "single");
 
     if (started)
         out.push_back(std::move(token));

@@ -16,7 +16,7 @@ ers::impl::luaschema::InclusiveWithProperty::InclusiveWithProperty(std::vector<s
 
 ers::Status ers::impl::luaschema::InclusiveWithProperty::exec([[maybe_unused]] verify_context& ctx, sol::table table, std::string_view field) const {
     if (!table.get<std::optional<sol::object>>(field))
-        return ers::ok;
+        return ok;
 
 
     std::vector<std::string_view> absent;
@@ -28,12 +28,12 @@ ers::Status ers::impl::luaschema::InclusiveWithProperty::exec([[maybe_unused]] v
 
 
     if (!absent.empty()) {
-        return ers::make_error(ers::ELuaSchemaError::InclusiveFields, "Field '{}' is inclusive with fields {}",
+        return make_error(ELuaSchemaError::InclusiveFields, "'{}' with {}",
             field, absent);
     }
 
 
-    return ers::ok;
+    return ok;
 }
 
 

@@ -134,7 +134,7 @@ namespace ers::impl {
     template<typename T>
     AsyncTask<T> cancellable(std::shared_ptr<JobControl> control, AsyncTask<T> task) {
         if (control->cancelled())
-            co_return make_error(ers::EAsyncError::Cancelled, "The job was cancelled.");
+            co_return make_error(EAsyncError::Cancelled);
 
         Result<T> result;
         std::exception_ptr error;
@@ -152,7 +152,7 @@ namespace ers::impl {
         }
 
         if (aborted)
-            co_return make_error(ers::EAsyncError::Cancelled, "The job was cancelled.");
+            co_return make_error(EAsyncError::Cancelled);
 
         if (error)
             std::rethrow_exception(error);
