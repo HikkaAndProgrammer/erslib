@@ -71,7 +71,7 @@ ERS_TEST_CASE("context", "[core]") {
         auto s = read_config();
         REQUIRE(s.has_error());
 
-        CHECK(s.error().message() == "Division by zero: 1 / 0");
+        CHECK(s.error().detail() == "Division by zero: 1 / 0");
     }
 
     SECTION("no prefix") {

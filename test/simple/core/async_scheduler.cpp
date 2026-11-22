@@ -108,7 +108,7 @@ ERS_TEST_CASE("error", "[async]") {
     auto result = scheduler.spawn(broken()).get();
 
     REQUIRE(!result);
-    REQUIRE(result.error().message() == "boom");
+    REQUIRE(result.error().detail() == "boom");
 }
 
 ERS_TEST_CASE("yield", "[async]") {
@@ -277,7 +277,7 @@ ERS_TEST_CASE("blocking", "[async]") {
 
     auto failed = scheduler.spawn(failing(scheduler)).get();
     REQUIRE(!failed);
-    REQUIRE(failed.error().message() == "db down");
+    REQUIRE(failed.error().detail() == "db down");
 
     auto thrown = scheduler.spawn(throwing(scheduler)).get();
     REQUIRE(!thrown);

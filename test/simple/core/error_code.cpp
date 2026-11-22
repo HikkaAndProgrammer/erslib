@@ -45,6 +45,7 @@ ERS_TEST_CASE("diagnostic carries its code", "[core]") {
     const auto diag = ers::make_error(test_ns::ETestError::Second, "boom {}", 1);
 
     REQUIRE(diag.code() == test_ns::ETestError::Second);
-    REQUIRE(diag.message() == "boom 1");
+    REQUIRE(diag.detail() == "boom 1");
+    REQUIRE(diag.message() == "the second: boom 1");
     REQUIRE(diag.to_string().contains("[test]"));
 }
