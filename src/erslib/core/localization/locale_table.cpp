@@ -20,7 +20,7 @@
 #include <erslib/core/localization/key.hpp>
 
 
-using fs = std::filesystem;
+namespace fs = std::filesystem;
 
 
 // Details
