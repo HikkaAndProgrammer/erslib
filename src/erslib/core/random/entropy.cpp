@@ -15,7 +15,7 @@ namespace {
 }
 
 
-u64 ers::impl::entropy() {
+ers::u64 ers::impl::entropy() {
     std::lock_guard lock(guard);
     
     auto& source = device();

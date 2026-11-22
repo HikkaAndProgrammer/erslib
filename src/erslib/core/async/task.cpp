@@ -1,5 +1,8 @@
 #include "erslib/core/async/task.hpp"
 
+#ifdef _HAS_BOOST_ASIO
+
+
 // boost
 #include <boost/asio/post.hpp>
 #include <boost/asio/this_coro.hpp>
@@ -21,3 +24,6 @@ ers::AsyncTask<void> ers::impl::checkpoint() {
 
     co_return ok;
 }
+
+
+#endif

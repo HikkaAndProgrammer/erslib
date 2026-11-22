@@ -19,6 +19,9 @@ namespace fs = std::filesystem;
 // Exports ---------------------------------------------------------------------
 
 namespace ers {
+    namespace fs = std::filesystem;
+
+
     using impl::path_separator;
 
     ERS_MAKE_EXCEPTION_EXPORTS(impl, path_error);

@@ -18,7 +18,7 @@ ers::impl::thread_safe::ShuffleSeeds::ShuffleSeeds(duration_t lifetime, u64 seed
 
 // Accessors
 
-i64 ers::impl::thread_safe::ShuffleSeeds::acquire(std::string_view session, timestamp_t now) {
+ers::i64 ers::impl::thread_safe::ShuffleSeeds::acquire(std::string_view session, timestamp_t now) {
     boost::upgrade_lock read_lock(_mutex);
 
     auto it = _data.find(session);
@@ -45,7 +45,7 @@ size_t ers::impl::thread_safe::ShuffleSeeds::size() const {
 
 // Modifiers
 
-i64 ers::impl::thread_safe::ShuffleSeeds::rotate(std::string_view session, timestamp_t now) {
+ers::i64 ers::impl::thread_safe::ShuffleSeeds::rotate(std::string_view session, timestamp_t now) {
     std::unique_lock lock(_mutex);
 
     auto it = _data.find(session);
@@ -71,6 +71,6 @@ size_t ers::impl::thread_safe::ShuffleSeeds::maintain(timestamp_t now) {
 
 // Generators
 
-i64 ers::impl::thread_safe::ShuffleSeeds::_mint() {
+ers::i64 ers::impl::thread_safe::ShuffleSeeds::_mint() {
     return static_cast<i64>(_rng());
 }

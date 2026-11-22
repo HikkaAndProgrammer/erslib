@@ -59,7 +59,7 @@ std::string ers::impl::util::quote(std::string_view what) {
 // bytes_to_string
 
 namespace {
-    enum class EMode : u8 { HexLower, HexUpper, Text };
+    enum class EMode : ers::u8 { HexLower, HexUpper, Text };
 
     constexpr std::string_view lower_digits = "0123456789abcdef";
     constexpr std::string_view upper_digits = "0123456789ABCDEF";

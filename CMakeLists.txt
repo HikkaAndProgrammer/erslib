@@ -153,15 +153,19 @@ target_sources(erslib_core
 		"src/erslib/core/util/string.cpp"
 )
 
+erslib_required_package(erslib_core boost_container Boost::container)
 erslib_required_package(erslib_core boost_preprocessor Boost::preprocessor)
+erslib_required_package(erslib_core boost_thread Boost::thread)
+erslib_required_package(erslib_core boost_unordered Boost::unordered)
+erslib_required_package(erslib_core frozen frozen::frozen)
+
+target_compile_definitions(erslib_core PUBLIC _HAS_BOOST_THREAD)
 
 erslib_optional_package(erslib_core boost_asio Boost::asio _HAS_BOOST_ASIO)
-erslib_optional_package(erslib_core boost_optional Boost::multi_index _HAS_BOOST_MULTI_INDEX)
+erslib_optional_package(erslib_core boost_multi_index Boost::multi_index _HAS_BOOST_MULTI_INDEX)
 erslib_optional_package(erslib_core boost_optional Boost::optional _HAS_BOOST_OPTIONAL)
 erslib_optional_package(erslib_core boost_process Boost::process _HAS_BOOST_PROCESS)
-erslib_optional_package(erslib_core boost_thread Boost::thread _HAS_BOOST_THREAD)
 erslib_optional_package(erslib_core boost_uuid Boost::uuid _HAS_BOOST_UUID)
-erslib_optional_package(erslib_core cpptrace cpptrace::cpptrace _HAS_CPPTRACE)
 
 
 if(ERSLIB_EXPOSE_GENERAL)

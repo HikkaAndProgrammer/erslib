@@ -13,6 +13,7 @@
 
 // ers
 #include <erslib/core/exception.hpp>
+#include <erslib/core/filesystem.hpp>
 #include <erslib/core/hashing/rapid.hpp>
 #include <erslib/core/localization/config.hpp>
 #include <erslib/core/localization/domain.hpp>

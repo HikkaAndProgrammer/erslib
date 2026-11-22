@@ -1,5 +1,8 @@
 #include "erslib/core/type/uuid.hpp"
 
+#ifdef _HAS_BOOST_UUID
+
+
 // std
 #include <concepts>
 #include <exception>
@@ -38,3 +41,6 @@ ers::maybe<boost::uuids::uuid> ers::impl::maybe_uuid_from_string(std::string_vie
 std::string std::formatter<boost::uuids::uuid>::format(const ers::uuid& v, std::format_context& /*ctx*/) const {
     return ers::uuid_to_string(v);
 }
+
+
+#endif
