@@ -7,8 +7,8 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_SPLIT_ERRORS(X) \
-    X(TrailingBackslash, "trailing backslash") \
-    X(UnterminatedQuote, "unterminated quote")
+    X(TrailingBackslash, "Trailing backslash") \
+    X(UnterminatedQuote, "Unterminated quote")
 
 
 // Implementation --------------------------------------------------------------

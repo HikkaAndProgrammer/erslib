@@ -7,11 +7,11 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_CONVERT_ERRORS(X) \
-    X(CastFailed, "the value could not be cast") \
-    X(ParseFailed, "the text could not be parsed") \
-    X(MalformedTimestamp, "malformed timestamp") \
-    X(MalformedDate, "malformed date") \
-    X(OutOfRange, "the value is out of range")
+    X(CastFailed, "Value could not be cast") \
+    X(ParseFailed, "Text could not be parsed") \
+    X(MalformedTimestamp, "Malformed timestamp") \
+    X(MalformedDate, "Malformed date") \
+    X(OutOfRange, "Value is out of range")
 
 
 // Implementation --------------------------------------------------------------

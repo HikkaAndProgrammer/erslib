@@ -7,21 +7,21 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_LOCALIZATION_ERRORS(X) \
-    X(NoLocales, "there are no locales") \
-    X(DuplicateLocale, "a locale is listed twice") \
-    X(UnknownLocale, "unknown locale") \
-    X(UnknownFallback, "the fallback locale is not among the locales") \
-    X(DuplicateKey, "a key is defined twice") \
-    X(DuplicateDomain, "a domain is defined twice") \
-    X(InvalidKey, "invalid key") \
-    X(InvalidReference, "invalid reference") \
-    X(ReferenceCycle, "reference cycle") \
-    X(ReferenceTooDeep, "references are nested too deep") \
-    X(UnresolvedReference, "a reference has no text") \
-    X(BadBundle, "invalid bundle") \
-    X(BadPath, "invalid path") \
-    X(Io, "cannot read the file") \
-    X(Failed, "localization failed")
+    X(NoLocales, "There are no locales") \
+    X(DuplicateLocale, "Locale is listed twice") \
+    X(UnknownLocale, "Unknown locale") \
+    X(UnknownFallback, "Fallback locale is not among the locales") \
+    X(DuplicateKey, "Key is defined twice") \
+    X(DuplicateDomain, "Domain is defined twice") \
+    X(InvalidKey, "Invalid key") \
+    X(InvalidReference, "Invalid reference") \
+    X(ReferenceCycle, "Reference cycle") \
+    X(ReferenceTooDeep, "References are nested too deep") \
+    X(UnresolvedReference, "Reference has no text") \
+    X(BadBundle, "Invalid bundle") \
+    X(BadPath, "Invalid path") \
+    X(Io, "Cannot read the file") \
+    X(Failed, "Localization failed")
 
 
 // Implementation --------------------------------------------------------------

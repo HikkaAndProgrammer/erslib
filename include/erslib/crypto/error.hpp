@@ -7,8 +7,8 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_CRYPTO_ERRORS(X) \
-    X(CannotRead, "cannot read the file") \
-    X(ReadFailed, "reading the file failed")
+    X(CannotRead, "Cannot read the file") \
+    X(ReadFailed, "Reading the file failed")
 
 
 // Implementation --------------------------------------------------------------

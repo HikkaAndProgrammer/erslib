@@ -7,11 +7,11 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_JSON_ERRORS(X) \
-    X(Malformed, "malformed JSON") \
-    X(Io, "cannot read the file") \
-    X(InvalidSchema, "invalid JSON schema") \
+    X(Malformed, "Malformed JSON") \
+    X(Io, "Cannot read the file") \
+    X(InvalidSchema, "Invalid JSON schema") \
     X(ValidationFailed, "JSON validation failed") \
-    X(Mismatch, "the JSON does not match the type")
+    X(Mismatch, "JSON does not match the type")
 
 
 // Implementation --------------------------------------------------------------

@@ -7,8 +7,8 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_MODKIT_ERRORS(X) \
-    X(ElementNotFound, "the element is not found") \
-    X(TypeMismatch, "the element has another type")
+    X(ElementNotFound, "Element is not found") \
+    X(TypeMismatch, "Element has another type")
 
 
 // Implementation --------------------------------------------------------------

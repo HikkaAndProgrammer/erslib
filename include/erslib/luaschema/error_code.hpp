@@ -7,15 +7,15 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_LUASCHEMA_ERRORS(X) \
-    X(InvalidObject, "the object is not valid or nil") \
-    X(UnexpectedType, "the object has an unexpected type") \
-    X(ExpectedTable, "expected a table") \
-    X(ExpectedArray, "expected an array table") \
-    X(NoVariantMatched, "no variant alternative matched") \
-    X(ExclusiveFields, "the field is exclusive with other fields") \
-    X(InclusiveFields, "the field is inclusive with other fields") \
-    X(OneOfRequired, "exactly one of the fields must be defined") \
-    X(FieldRequired, "the field is required")
+    X(InvalidObject, "Object is not valid or nil") \
+    X(UnexpectedType, "Object has an unexpected type") \
+    X(ExpectedTable, "Table was expected") \
+    X(ExpectedArray, "Array table was expected") \
+    X(NoVariantMatched, "Variant alternative is not matched") \
+    X(ExclusiveFields, "Field is exclusive with other fields") \
+    X(InclusiveFields, "Field is inclusive with other fields") \
+    X(OneOfRequired, "Exactly one of the fields must be defined") \
+    X(FieldRequired, "The field is required")
 
 
 // Implementation --------------------------------------------------------------

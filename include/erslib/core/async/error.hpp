@@ -7,23 +7,23 @@
 // Macros ----------------------------------------------------------------------
 
 #define ERS_ASYNC_ERRORS(X) \
-    X(SchedulerStopped, "the scheduler is stopped") \
-    X(BulkheadFull, "the bulkhead is full") \
-    X(Cancelled, "the job was cancelled") \
-    X(Dropped, "the job was dropped before it finished") \
-    X(TaskThrew, "the task threw an exception") \
-    X(SyncWaitIncomplete, "sync_wait did not finish") \
-    X(AlreadyStarted, "the runtime was already started") \
-    X(PeriodicFailed, "a periodic task failed") \
-    X(ServiceStartFailed, "a service failed to start")
+    X(SchedulerStopped, "Scheduler is stopped") \
+    X(BulkheadFull, "Bulkhead is full") \
+    X(Cancelled, "Job was cancelled") \
+    X(Dropped, "Job was dropped before it finished") \
+    X(TaskThrew, "Task threw an exception") \
+    X(SyncWaitIncomplete, "`sync_wait` did not finish") \
+    X(AlreadyStarted, "The runtime was already started") \
+    X(PeriodicFailed, "Periodic task failed") \
+    X(ServiceStartFailed, "Service failed to start")
 
 #define ERS_PROCESS_ERRORS(X) \
-    X(EmptyCommand, "the process command is empty") \
-    X(ExecutableNotFound, "the executable was not found") \
-    X(StartFailed, "the process could not be started") \
-    X(ReadFailed, "the process output could not be read") \
-    X(Cancelled, "the process was cancelled") \
-    X(TimedOut, "the process timed out")
+    X(EmptyCommand, "Process command is empty") \
+    X(ExecutableNotFound, "Executable was not found") \
+    X(StartFailed, "Process could not be started") \
+    X(ReadFailed, "Process output could not be read") \
+    X(Cancelled, "Process was cancelled") \
+    X(TimedOut, "Process timed out")
 
 
 // Implementation --------------------------------------------------------------
