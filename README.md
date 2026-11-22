@@ -5,7 +5,7 @@ include(FetchContent)
 
 FetchContent_Declare(
     erslib
-    GIT_REPOSITORY https://github.com/EilRoviSoft/erslib.git
+    GIT_REPOSITORY https://github.com/HikkaAndProgrammer/erslib.git
     GIT_TAG main
 )
 
