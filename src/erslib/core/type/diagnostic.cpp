@@ -17,20 +17,24 @@ std::string ers::impl::Diagnostic::_build_message() const {
 ers::impl::Diagnostic::Diagnostic(
 #ifdef _HAS_CPPTRACE
     ESeverity severity,
+    std::error_code code,
     std::string message,
     timestamp_t timestamp,
     cpptrace::raw_trace trace
 ) :
     m_severity(severity),
+    m_code(code),
     m_message(std::move(message)),
     m_timestamp(timestamp),
     m_trace(std::move(trace)) {
 #else
     ESeverity severity,
+    std::error_code code,
     std::string message,
     timestamp_t timestamp
 ) :
     m_severity(severity),
+    m_code(code),
     m_message(std::move(message)),
     m_timestamp(timestamp) {
 #endif
@@ -41,9 +45,10 @@ std::string ers::impl::Diagnostic::to_string(bool trim) const {
     return trim
         ? _build_message()
         : std::format(
-            "[{:%Y-%m-%dT%H:%M:%S}] [{}] {}",
+            "[{:%Y-%m-%dT%H:%M:%S}] [{}] [{}] {}",
             std::chrono::floor<std::chrono::seconds>(m_timestamp),
             severity_name(m_severity),
+            m_code.category().name(),
 #ifdef _HAS_CPPTRACE
             extend_with_trace(_build_message(), m_trace)
 #else

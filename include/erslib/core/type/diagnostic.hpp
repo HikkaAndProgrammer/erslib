@@ -5,11 +5,13 @@
 #include <format>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <utility>
 #include <vector>
 
 // ers
 #include <erslib/core/exception.hpp>
+#include <erslib/core/type/error_code.hpp>
 #include <erslib/core/type/time.hpp>
 
 // export
@@ -66,11 +68,13 @@ namespace ers::impl {
         Diagnostic(
 #ifdef _HAS_CPPTRACE
             ESeverity severity,
+            std::error_code code,
             std::string message,
             timestamp_t timestamp = std::chrono::system_clock::now(),
             cpptrace::raw_trace trace = get_trace({ .skip = 1 })
 #else
             ESeverity severity,
+            std::error_code code,
             std::string message,
             timestamp_t timestamp = std::chrono::system_clock::now()
 #endif
@@ -80,6 +84,7 @@ namespace ers::impl {
         // Observers
 
         ESeverity severity() const noexcept { return m_severity; }
+        std::error_code code() const noexcept { return m_code; }
         timestamp_t timestamp() const noexcept { return m_timestamp; }
         std::string_view message() const noexcept { return m_message; }
 #ifdef _HAS_CPPTRACE
@@ -110,6 +115,7 @@ namespace ers::impl {
 
     protected:
         ESeverity m_severity;
+        std::error_code m_code;
         std::string m_message;
         std::vector<std::string> m_context;
         timestamp_t m_timestamp;
@@ -126,38 +132,47 @@ namespace ers::impl {
 
 // Formatters
 
-#define X_DIAGNOSTIC(NAME, SEVERITY) \
-    template<typename... Args> \
-        requires (sizeof...(Args) >= 1) \
-    Diagnostic NAME(std::format_string<Args...> fmt, Args&&... args) { \
-        return Diagnostic(ers::ESeverity::SEVERITY, std::format(fmt, std::forward<Args>(args)...)); \
-    } \
-    \
-    inline Diagnostic NAME(std::string message) { \
-        return Diagnostic(ers::ESeverity::SEVERITY, std::move(message)); \
-    }
+#define ERS_DECLARE_DIAGNOSTIC(X) \
+    X(make_debug, Debug); \
+    X(make_info, Info); \
+    X(make_warning, Warning); \
+    X(make_error, Error); \
+    X(make_crit, Crit);
+
+
+#define ERS_X_FN_DIAGNOSTIC(NAME, SEVERITY) \
+    struct NAME##_fn { \
+        template<typename... Args> \
+            requires (sizeof...(Args) >= 1) \
+        Diagnostic operator()(std::error_code code, std::format_string<Args...> fmt, Args&&... args) { \
+            return Diagnostic(ers::ESeverity::SEVERITY, code, std::format(fmt, std::forward<Args>(args)...)); \
+        } \
+        \
+        inline Diagnostic operator()(std::error_code code, std::string message) { \
+            return Diagnostic(ers::ESeverity::SEVERITY, code, std::move(message)); \
+        } \
+    }; \
+    inline constexpr NAME##_fn NAME {}
 
 namespace ers::impl {
-    X_DIAGNOSTIC(make_debug, Debug);
-    X_DIAGNOSTIC(make_info, Info);
-    X_DIAGNOSTIC(make_warning, Warning);
-    X_DIAGNOSTIC(make_error, Error);
-    X_DIAGNOSTIC(make_crit, Crit);
+    ERS_DECLARE_DIAGNOSTIC(ERS_X_FN_DIAGNOSTIC)
 }
 
-#undef DEFINE_DIAGNOSTIC
+#undef ERS_X_FN_DIAGNOSTIC
 
 
 // Exports ---------------------------------------------------------------------
 
-namespace ers {
-    using impl::Diagnostic;
-}
+#define ERS_X_USING_DIAGNOSTIC(NAME, SEVERITY) \
+    using impl::NAME
 
 namespace ers {
-    using impl::make_debug;
-    using impl::make_info;
-    using impl::make_warning;
-    using impl::make_error;
-    using impl::make_crit;
+    using impl::Diagnostic;
+
+    ERS_DECLARE_DIAGNOSTIC(ERS_X_USING_DIAGNOSTIC)
 }
+
+#undef ERS_X_USING_DIAGNOSTIC
+
+
+#undef ERS_DECLARE_DIAGNOSTIC
