@@ -38,6 +38,15 @@ ers::impl::Diagnostic::Diagnostic(
     m_message(std::move(message)),
     m_timestamp(timestamp) {
 #endif
+    auto text = m_code.message();
+
+    if (m_message.empty()) {
+        m_detail_offset = text.size();
+        m_message = std::move(text);
+    } else {
+        m_detail_offset = text.size() + 2;
+        m_message = std::format("{}: {}", text, m_message);
+    }
 }
 
 
@@ -59,6 +68,9 @@ std::string ers::impl::Diagnostic::to_string(bool trim) const {
 
 
 ers::impl::Diagnostic&& ers::impl::Diagnostic::extend(std::string_view message) && {
+    if (m_message.size() == m_detail_offset)
+        m_message += ": ";
     m_message += message;
+
     return std::move(*this);
 }

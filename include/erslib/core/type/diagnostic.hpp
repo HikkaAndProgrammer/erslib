@@ -69,13 +69,13 @@ namespace ers::impl {
 #ifdef _HAS_CPPTRACE
             ESeverity severity,
             std::error_code code,
-            std::string message,
+            std::string message = {},
             timestamp_t timestamp = std::chrono::system_clock::now(),
             cpptrace::raw_trace trace = get_trace({ .skip = 1 })
 #else
             ESeverity severity,
             std::error_code code,
-            std::string message,
+            std::string message = {},
             timestamp_t timestamp = std::chrono::system_clock::now()
 #endif
         );
@@ -87,6 +87,7 @@ namespace ers::impl {
         std::error_code code() const noexcept { return m_code; }
         timestamp_t timestamp() const noexcept { return m_timestamp; }
         std::string_view message() const noexcept { return m_message; }
+        std::string_view detail() const noexcept { return std::string_view(m_message).substr(m_detail_offset); }
 #ifdef _HAS_CPPTRACE
         const cpptrace::raw_trace& stacktrace() const noexcept { return m_trace; }
 #endif
@@ -117,6 +118,7 @@ namespace ers::impl {
         ESeverity m_severity;
         std::error_code m_code;
         std::string m_message;
+        size_t m_detail_offset = 0;
         std::vector<std::string> m_context;
         timestamp_t m_timestamp;
 #ifdef _HAS_CPPTRACE
@@ -144,12 +146,16 @@ namespace ers::impl {
     struct NAME##_fn { \
         template<typename... Args> \
             requires (sizeof...(Args) >= 1) \
-        Diagnostic operator()(std::error_code code, std::format_string<Args...> fmt, Args&&... args) { \
+        Diagnostic operator()(std::error_code code, std::format_string<Args...> fmt, Args&&... args) const { \
             return Diagnostic(ers::ESeverity::SEVERITY, code, std::format(fmt, std::forward<Args>(args)...)); \
         } \
         \
-        inline Diagnostic operator()(std::error_code code, std::string message) { \
+        inline Diagnostic operator()(std::error_code code, std::string message) const { \
             return Diagnostic(ers::ESeverity::SEVERITY, code, std::move(message)); \
+        } \
+        \
+        Diagnostic operator()(std::error_code code) const { \
+            return Diagnostic(ers::ESeverity::SEVERITY, code); \
         } \
     }; \
     inline constexpr NAME##_fn NAME {}
