@@ -167,6 +167,8 @@ erslib_optional_package(erslib_core boost_optional Boost::optional _HAS_BOOST_OP
 erslib_optional_package(erslib_core boost_process Boost::process _HAS_BOOST_PROCESS)
 erslib_optional_package(erslib_core boost_uuid Boost::uuid _HAS_BOOST_UUID)
 
+erslib_optional_package(erslib_core cpptrace cpptrace::cpptrace _HAS_CPPTRACE)
+
 
 if(ERSLIB_EXPOSE_GENERAL)
 	target_compile_definitions(erslib_core PUBLIC ERS_EXPOSE_GENERAL)
